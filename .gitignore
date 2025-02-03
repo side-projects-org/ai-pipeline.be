@@ -1,4 +1,5 @@
 # project/env/live/README.md 를 제외한 모든 .txt 파일
 /project_env/live/*.txt
 
+/src/.venv
 
