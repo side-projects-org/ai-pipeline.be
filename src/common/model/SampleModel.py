@@ -36,7 +36,7 @@ class CustomMyDynamicMapAttribute(CDynamicMapAttribute):
 
 
 class SampleModel(Model):
-    key: UnicodeAttribute = UnicodeAttribute(hash_key=True)
+    key = UnicodeAttribute(hash_key=True)
 
     gsi_partition_key = UnicodeAttribute(null=True)
     gsi_sort_key = UnicodeAttribute(null=True)

@@ -133,7 +133,7 @@ class DynamoDBDaoSample(unittest.TestCase):
         # Delete
         read_sample.delete()
 
-    def test_ListAttribute_CRUD(self):
+    def test_ListAttribute_of_fixed_type_CRUD(self):
         """원시타입과 Object 타입으로 고정된 배열에 대한 성공 테스트"""
         # given
         uuid_key = uuid.uuid4().__str__()
