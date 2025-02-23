@@ -45,10 +45,6 @@ class TestPynamoUtil(unittest.TestCase):
 
         result_dict = dict(model_to_dict(sample))
 
-        logger.info(f'now {now}')
-        logger.info(f'given_dict["utc_datetime_attr"] {given_dict["utc_datetime_attr"]}')
-        logger.info(f'result_dict["utc_datetime_attr"] {result_dict["utc_datetime_attr"]}')
-
         # get cost time
         start = datetime.datetime.now()
 
@@ -63,4 +59,4 @@ class TestPynamoUtil(unittest.TestCase):
             actual = result_dict[k]
             self.assertEqual(expect, actual)
 
-
+        sample.delete()
