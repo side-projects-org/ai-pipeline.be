@@ -1,16 +1,15 @@
 # pynamodb 의 model 을 dict 로 변환하는 메서드
 import datetime
 
-from pynamodb.attributes import MapAttribute, DynamicMapAttribute
+from pynamodb.attributes import MapAttribute, DynamicMapAttribute, TTLAttribute
+from pynamodb.models import Model
 
 
-def model_to_dict(model):
+def model_to_dict(model: Model):
     for attr_name in model.get_attributes().keys():
         attr = getattr(model, attr_name)
         if isinstance(attr, MapAttribute) or isinstance(attr, DynamicMapAttribute):
             attr = attr.as_dict()
         elif isinstance(attr, list):
             attr = [dict(model_to_dict(item)) if isinstance(item, MapAttribute) or isinstance(item, DynamicMapAttribute) else item for item in attr]
-        elif isinstance(attr, datetime.datetime):
-            attr = datetime.datetime.strftime(attr, "%Y-%m-%dT%H:%M:%S")
         yield attr_name, attr

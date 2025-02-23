@@ -2,9 +2,17 @@ import datetime
 import json
 import unittest
 import uuid
+import logging
+
 
 from src.common.model.SampleModel import SampleModel
 from src.common.pynamo_util import model_to_dict
+
+logging.basicConfig(level=logging.INFO)
+
+logger = logging.getLogger(__name__)
+
+
 class TestPynamoUtil(unittest.TestCase):
     def test_get_pynamodb_model_to_dict(self):
         # Given
@@ -16,7 +24,7 @@ class TestPynamoUtil(unittest.TestCase):
             'bool_attr': True,
             'num_attr': 1,
             'utc_datetime_attr': now,
-            'ttl_attr': now,
+            'ttl_attr': now.replace(microsecond=0),
             # 'unicode_set_attr': {'a', 'b'},
             # 'num_set_attr': {1, 2},
             'list_attr': [1, 'a', True],
@@ -37,6 +45,10 @@ class TestPynamoUtil(unittest.TestCase):
 
         result_dict = dict(model_to_dict(sample))
 
+        logger.info(f'now {now}')
+        logger.info(f'given_dict["utc_datetime_attr"] {given_dict["utc_datetime_attr"]}')
+        logger.info(f'result_dict["utc_datetime_attr"] {result_dict["utc_datetime_attr"]}')
+
         # get cost time
         start = datetime.datetime.now()
 
@@ -45,12 +57,10 @@ class TestPynamoUtil(unittest.TestCase):
 
         end = datetime.datetime.now()
         print("cost time: ", (end - start).total_seconds(), "s")
-        print(json.dumps(result_dict, indent=4))
+        print(json.dumps(result_dict, indent=4, default=str))
 
-        for k, v in given_dict.items():
-            if isinstance(v, datetime.datetime):
-                self.assertEqual(v.strftime('%Y-%m-%dT%H:%M:%S'), result_dict[k])
-            else:
-                self.assertEqual(given_dict[k], v)
+        for k, expect in given_dict.items():
+            actual = result_dict[k]
+            self.assertEqual(expect, actual)
 
 

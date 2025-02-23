@@ -47,7 +47,8 @@ class SampleModel(Model):
     num_attr = NumberAttribute(default=0)  # number
     utc_datetime_attr = UTCDateTimeAttribute(null=True)  # UTC datetime
 
-    # 옵션 타입
+    # 옵션 타입 (epoch time, 즉 숫자로 저장됩니다)
+    # attribute 로 조회하는 경우, datetime.datetime 으로 변환된다
     ttl_attr = TTLAttribute(null=True)  # TTL
 
     # 리스트나 맵, 셋 같은 복합 타입
