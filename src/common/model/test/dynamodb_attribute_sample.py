@@ -3,12 +3,13 @@ import logging
 import datetime
 import uuid
 
-from pynamodb.attributes import NumberAttribute
 from pynamodb.exceptions import PutError
 
-from src.common.model.SampleModel import SampleModel, CustomMapAttribute
+from src.common.model.SampleModel import SampleModel, CustomMapAttribute, SampleModelExtends
 
 import unittest
+
+from src.common.pynamo_util import model_to_dict
 
 # logger 는 info 까지 출력되어야햄
 logger = logging.getLogger(__name__)
@@ -283,3 +284,46 @@ class DynamoDBDaoSample(unittest.TestCase):
 
         # Delete
         sample.delete()
+
+    def test_save_SampleModelExtends_and_read_SampleModel(self):
+        """
+        SampleModelExtends 로 저장한 후
+        SampleModel 로 읽어오는 테스트 (추가적인 필드가 존재하지만, 정의되어 있지 않은 경우)
+        """
+
+        # given
+        uuid_key = uuid.uuid4().__str__()
+        given_dict = {
+            'key': uuid_key,
+            'unicode_attr': 'unicode_attr',
+            'bool_attr': True,
+            'num_attr': 1,
+            'utc_datetime_attr': datetime.datetime.now(datetime.UTC) + datetime.timedelta(hours=1),
+            'ttl_attr': datetime.datetime.now(datetime.UTC) + datetime.timedelta(hours=1),
+            'list_attr': [1, 'a', True],
+            'list_attr_fix_object_type': [{'attr1': 'a', 'attr2': 'b'}],
+            'list_attr_fix_primitive_type': [1, 2, 3],
+            'dynamic_map_attr': {'unknown_attr': 'a', 'unknown_attr2': 'b'},
+            'custom_map_attr': {'attr1': 'a', 'attr2': 'b'},
+            'custom_dynamic_map_attr': {'attr1': 'a', 'attr2': 'b', 'attr3': 'c'},
+            'extra_field': 'extra_field',
+            'gsi_partition_key': 'gsi_partition_key',
+            'gsi_sort_key': 'gsi_sort_key'
+        }
+
+        # Create
+        sample = SampleModelExtends(**given_dict)
+        sample.save()
+
+        # Read
+        read_sample = SampleModel.get(uuid_key)
+        read_sample_extends = SampleModelExtends.get(uuid_key)
+        result_dict = model_to_dict(read_sample)
+        # then
+
+        self.assertEqual(read_sample_extends.extra_field, 'extra_field')
+        with self.assertRaises(AttributeError):
+            print(read_sample.extra_field)
+
+        with self.assertRaises(KeyError):
+            print(result_dict['extra_field'])

@@ -74,3 +74,6 @@ class SampleModel(Model):
         table_name = "test2"
         region = BaseConfig.AWS_REGION
 
+
+class SampleModelExtends(SampleModel):
+    extra_field = UnicodeAttribute(null=True)
