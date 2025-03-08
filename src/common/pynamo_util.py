@@ -5,7 +5,7 @@ from pynamodb.attributes import MapAttribute, DynamicMapAttribute, TTLAttribute
 from pynamodb.models import Model
 
 
-def model_to_dict(model: Model):
+def _model_to_dict(model: Model):
     for attr_name in model.get_attributes().keys():
         attr = getattr(model, attr_name)
         if isinstance(attr, MapAttribute) or isinstance(attr, DynamicMapAttribute):
@@ -13,3 +13,7 @@ def model_to_dict(model: Model):
         elif isinstance(attr, list):
             attr = [dict(model_to_dict(item)) if isinstance(item, MapAttribute) or isinstance(item, DynamicMapAttribute) else item for item in attr]
         yield attr_name, attr
+
+
+def model_to_dict(model: Model):
+    return dict(_model_to_dict(model))

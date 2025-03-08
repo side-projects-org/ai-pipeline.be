@@ -43,13 +43,13 @@ class TestPynamoUtil(unittest.TestCase):
 
         # read_sample = SampleModel.get(uuid_key)
 
-        result_dict = dict(model_to_dict(sample))
+        result_dict = model_to_dict(sample)
 
         # get cost time
         start = datetime.datetime.now()
 
         for i in range(1000):
-            result_dict = dict(model_to_dict(sample))
+            result_dict = model_to_dict(sample)
 
         end = datetime.datetime.now()
         print("cost time: ", (end - start).total_seconds(), "s")
