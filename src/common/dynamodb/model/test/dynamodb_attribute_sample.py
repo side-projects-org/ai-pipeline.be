@@ -5,11 +5,11 @@ import uuid
 
 from pynamodb.exceptions import PutError
 
-from src.common.model.SampleModel import SampleModel, CustomMapAttribute, SampleModelExtends
+from common.dynamodb.model import SampleModel, SampleModelExtends, CustomMapAttribute
 
 import unittest
 
-from src.common.pynamo_util import model_to_dict
+from common.pynamo_util import model_to_dict
 
 # logger 는 info 까지 출력되어야햄
 logger = logging.getLogger(__name__)
@@ -240,7 +240,7 @@ class DynamoDBDaoSample(unittest.TestCase):
         # self.assertEqual({'unknown_attr': 'a', 'unknown_attr2': 'b'}, read_sample.dynamic_map_attr.as_dict())
 
         # when
-        # save unexpected attribute in dynamic map
+        # save unexpected attributes in dynamic map
         sample.update(actions=[SampleModel.dynamic_map_attr['unknown_attr'].set('c')])
 
         # then

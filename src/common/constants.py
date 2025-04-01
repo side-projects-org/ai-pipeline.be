@@ -2,7 +2,7 @@ import os
 import logging
 
 
-logger = logging.getLogger("src.common.constants")
+logger = logging.getLogger("common.constants")
 
 
 def get_env(env_name, filename, default='not-assigned'):

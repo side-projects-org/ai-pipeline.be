@@ -3,8 +3,8 @@ from pynamodb.models import Model
 from pynamodb.attributes import UnicodeAttribute, MapAttribute, ListAttribute, DynamicMapAttribute, BooleanAttribute, \
     NumberAttribute, UTCDateTimeAttribute, TTLAttribute
 
-from src.common.constants import BaseConfig
-from src.common.model.CustomAttribute import CDynamicMapAttribute
+from common.constants import BaseConfig
+from common.dynamodb.attributes import CDynamicMapAttribute
 
 
 class SampleGlobalIndex(GlobalSecondaryIndex):
@@ -48,7 +48,7 @@ class SampleModel(Model):
     utc_datetime_attr = UTCDateTimeAttribute(null=True)  # UTC datetime
 
     # 옵션 타입 (epoch time, 즉 숫자로 저장됩니다)
-    # attribute 로 조회하는 경우, datetime.datetime 으로 변환된다
+    # attributes 로 조회하는 경우, datetime.datetime 으로 변환된다
     ttl_attr = TTLAttribute(null=True)  # TTL
 
     # 리스트나 맵, 셋 같은 복합 타입
@@ -71,7 +71,7 @@ class SampleModel(Model):
     sample_global_index = SampleGlobalIndex()
 
     class Meta:
-        table_name = "test2"
+        table_name = "test"
         region = BaseConfig.AWS_REGION
 
 
