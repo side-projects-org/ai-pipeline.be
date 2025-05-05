@@ -1,3 +1,4 @@
+import json
 import logging
 
 from http import HTTPStatus
@@ -15,17 +16,32 @@ def _api_handler(func):
 
         try:
             response_data = func(event, context)
+
+            response_body = json.dumps(response_data)
+
+            # TODO response builder 로 빼기
             response = {
                 'statusCode': HTTPStatus.OK,
-                'body': response_data
+                'headers': {
+                    'Content-Type': 'application/json',
+                },
+                'body': response_body
             }
-        except APIException as exc:
-            logger.exception(exc)
+        except APIException as e:
+            logger.error(e.server_log)  # -> 잘못된 파라미터 입력: user_id
+
+            response_body = json.dumps({
+                'CODE': e.error_code.name,
+                'message': e.message,
+                'data': e.kwargs
+            })
+
             response = {
-                'statusCode': exc.status_code,
-                'body': {
-                    'message': exc.message
-                }
+                'statusCode': e.status_code,
+                'headers': {
+                    'Content-Type': 'application/json',
+                },
+                'body': response_body,
             }
 
         return response
