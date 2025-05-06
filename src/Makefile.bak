@@ -1,0 +1,116 @@
+# 현재 폴더와 src 폴더(루트 폴더) 경로
+SRC_ROOT_PATH := $(shell pwd | sed 's|\(/src\).*|\1|')
+CURR_PATH := $(shell pwd)
+CURR_FOLDER_NAME := $(shell basename $(CURR_PATH))
+
+# 파일 경로 설정
+BUILD_ZIP := build.zip
+BUILD_SHA := build.sha
+BUILD_SHA_TMP := build.sha.tmp
+
+# SHA-256 해시값 생성 함수
+define generate_sha
+	@echo "Generating SHA-256 hash for $(1)..."
+	@shasum -a 256 $(1) | awk '{ print $$1 }' > $(2)
+endef
+
+# SHA-256 해시값 비교 함수
+define compare_sha
+	@echo "Comparing SHA-256 hashes..."
+	@if [ -f $(1) ] && [ -f $(2) ]; then \
+		if cmp -s $(1) $(2); then \
+			echo "No changes detected. Deployment skipped."; \
+			exit 0; \
+		else \
+			echo "Changes etected. Proceeding with deployment..."; \
+		fi \
+	else \
+		echo "SHA files mis sing or incomplete. Proceeding with deployment..."; \
+	fi
+endef
+
+# 출력할 변수
+.PHONY: print_path
+print_path:
+	@echo '루트 디렉토리: $(SRC_ROOT_PATH)'
+	@echo '현재 디렉토리: $(CURR_PATH)'
+
+
+define build_sha256
+	@echo "	▶ Call func build_sha256(file_name)"
+	@echo "	Searching files to include in hash..."
+	@find . -type f \
+		! -path "./code/*" \
+		! -path "*/__pycache__/*" \
+		! -name "*.sha" \
+		! -name "*.zip" \
+		! -name "*.tmp" \
+		! -name "*.bak" \
+		! -name "Makefile*" \
+		-print0 \
+	| xargs -0 shasum -a 256 \
+	| awk '{ print $$1 }' \
+	| shasum -a 256 \
+	| awk '{ print $$1 }' > $(1);
+
+	@echo "	Hash code: $$(cat $(1))"
+	@echo "	✅ func ended. SHA-256 written in file named '$(1)'\n"
+endef
+
+.PHONY: zip-src
+zip-src:
+	@echo "▶ Generating SHA256 snapshot for current state..."
+	$(call build_sha256,$(BUILD_SHA_TMP))
+
+	@echo "▶ Comparing with existing $(BUILD_SHA)..."
+	@sh -c '\
+		CURR_HASH=$$(cat "$(BUILD_SHA_TMP)" 2>/dev/null); \
+		echo "  → SHA256_TMP = $$CURR_HASH"; \
+		BUILD_FLAG=false; \
+		if [ -f "$(BUILD_SHA)" ]; then \
+			OLD_HASH=$$(cat "$(BUILD_SHA)"); \
+			if [ "$$CURR_HASH" = "$$OLD_HASH" ]; then \
+				echo "⏸️ No changes detected. Deployment skipped."; \
+			else \
+				echo "🔄 Changes detected!"; \
+				mv $(BUILD_SHA_TMP) $(BUILD_SHA); \
+				echo "💾 Updated '$(BUILD_SHA)' with new checksum."; \
+				BUILD_FLAG=true; \
+			fi; \
+		else \
+			echo "🆕 First time deployment!"; \
+			mv $(BUILD_SHA_TMP) $(BUILD_SHA); \
+			echo "💾 Created '$(BUILD_SHA)' with new checksum."; \
+			BUILD_FLAG=true; \
+		fi; \
+		\
+		if [ "$$BUILD_FLAG" = "true" ]; then \
+			echo "▶ Proceeding with deployment..."; \
+			zip -r $(BUILD_ZIP) ./ \
+				-x "*.zip" "*.sha*" "Makefile*" "code/*" "*/__pycache__/*"; \
+			echo "✅ Build zip completed."; \
+		fi; \
+		\
+		rm -f ${BUILD_SHA_TMP}; \'
+
+
+# zip 파일 압축 해제
+.PHONY: unzip
+unzip:
+	@echo 'zip 파일 압축 해제'
+	@if [ -d code ]; then \
+		echo 'code 폴더가 존재합니다. 삭제를 진행합니다.'; \
+		rm -rf code; \
+	else \
+		echo 'code 폴더가 존재하지 않습니다.'; \
+	fi
+	mkdir -p "./code"
+	unzip -o "$(BUILD_ZIP)" -d "./code"
+	make tree
+
+# 디렉토리 구조 출력
+.PHONY: tree
+tree:
+	@echo '디렉토리 구조 출력'
+	tree -L 2
+

@@ -4,3 +4,7 @@
 /src/.venv
 
 /.idea/
+
+.DS_Store
+build.sha
+build.zip
