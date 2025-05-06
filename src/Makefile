@@ -3,8 +3,8 @@
 ZIP_TARGET_DIRS := \
 	common \
 	$(shell find api -mindepth 2 -maxdepth 2 -type d -name "api_*") \
-	layer \
-	worker
+	$(shell find api -mindepth 2 -maxdepth 2 -type d -name "layer_*") \
+	$(shell find api -mindepth 2 -maxdepth 2 -type d -name "worker_*") \
 
 EXCLUDE_PATTERNS := \
 	-name "*.zip" -o \
