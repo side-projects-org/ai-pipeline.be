@@ -8,6 +8,8 @@ ZIP_TARGET_DIRS := \
 	$(shell find api -mindepth 2 -maxdepth 2 -type d -name "api_*") \
 	$(shell find worker -mindepth 2 -maxdepth 2 -type d -name "worker_*")
 
+# TODO common 분리하기
+
 ZIP_LIBRARY_LAYER_DIR := \
 	$(shell find layer -mindepth 1 -maxdepth 1 -type d -name "layer_*")
 
@@ -63,6 +65,8 @@ zip-layer-all:
 					   /opt/python/lib/python3.12/site-packages/botocore* \
 					   /opt/python/lib/python3.12/site-packages/s3transfer*"; \
 		cd $$dir/package && zip -qr ../build.zip python/*; \
+		\
+		rm -rf $$dir/package; \
 	done
 
 

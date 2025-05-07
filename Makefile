@@ -1,3 +1,4 @@
+.PHONY: python_env_init
 python_env_init:
 	@if [ -d "src/.venv" ]; then \
 		echo "\033[33mVirtual environment already exists in src folder.\033[0m"; \
@@ -9,6 +10,7 @@ python_env_init:
 	fi
 
 # boilerplate 이므로, 새로운 remote에 연결하기 위해 기존 remote를 제거합니다.
+.PHONY: remove_origin
 remove_origin:
 	@if git config --get remote.origin.url > /dev/null; then \
 		echo "Current origin: $$(git remote get-url origin)"; \

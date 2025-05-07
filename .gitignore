@@ -10,3 +10,10 @@ build.sha
 build.zip
 
 package
+
+.terraform
+
+python
+
+.terraform.lock.hcl
+*tfstate*
