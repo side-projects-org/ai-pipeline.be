@@ -4,7 +4,7 @@ import unittest
 import uuid
 import logging
 
-
+from common.Json import ClsJsonEncoder
 from common.dynamodb.model.SampleModel import SampleModel
 from common.pynamo_util import model_to_dict
 
@@ -60,3 +60,18 @@ class TestPynamoUtil(unittest.TestCase):
             self.assertEqual(expect, actual)
 
         sample.delete()
+
+    def test(self):
+        key = 'c6ed6a51-5381-4041-a146-a2f45592cbe0'
+        sample = SampleModel.get(key)
+
+        sample_dict = model_to_dict(sample)
+
+        logger.info(sample_dict)
+
+        json_data = json.dumps(sample_dict, cls=ClsJsonEncoder, ensure_ascii=False, indent=4)
+
+        print("hi")
+        print(json_data)
+
+

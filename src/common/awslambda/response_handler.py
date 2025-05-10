@@ -4,6 +4,9 @@ import logging
 from http import HTTPStatus
 
 from common.APIException import APIException
+from common.Json import ClsJsonEncoder
+
+logging.basicConfig(level=logging.INFO)
 
 logger = logging.getLogger("common.awslambda.response_handler")
 
@@ -17,7 +20,13 @@ def _api_handler(func):
         try:
             response_data = func(event, context)
 
-            response_body = json.dumps(response_data)
+            response_body = None
+            try:
+                # TODO JSON util 로 빼기
+                response_body = json.dumps(response_data, cls=ClsJsonEncoder, ensure_ascii=False)
+            except Exception as e:
+                logger.error(f"JSON serialization error: {e}")
+                response_body = e.__cause__
 
             # TODO response builder 로 빼기
             response = {
@@ -34,7 +43,7 @@ def _api_handler(func):
                 'CODE': e.error_code.name,
                 'message': e.message,
                 'data': e.kwargs
-            })
+            }, cls=ClsJsonEncoder, ensure_ascii=False)
 
             response = {
                 'statusCode': e.status_code,
