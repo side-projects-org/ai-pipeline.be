@@ -4,7 +4,7 @@ from pynamodb.attributes import UnicodeAttribute, MapAttribute, ListAttribute, D
     NumberAttribute, UTCDateTimeAttribute, TTLAttribute
 
 from common.constants import BaseConfig
-from common.dynamodb.attributes import CDynamicMapAttribute
+from common.dynamodb.attributes.CustomAttribute import CDynamicMapAttribute
 
 
 class SampleGlobalIndex(GlobalSecondaryIndex):
@@ -71,7 +71,7 @@ class SampleModel(Model):
     sample_global_index = SampleGlobalIndex()
 
     class Meta:
-        table_name = "test"
+        table_name = "test2"
         region = BaseConfig.AWS_REGION
 
 

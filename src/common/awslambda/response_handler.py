@@ -3,7 +3,7 @@ import logging
 
 from http import HTTPStatus
 
-from common import APIException
+from common.APIException import APIException
 
 logger = logging.getLogger("common.awslambda.response_handler")
 

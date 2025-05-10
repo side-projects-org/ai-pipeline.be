@@ -1,3 +1,5 @@
+import unittest
+
 import logging
 
 import datetime
@@ -5,9 +7,8 @@ import uuid
 
 from pynamodb.exceptions import PutError
 
-from common.dynamodb.model import SampleModel, SampleModelExtends, CustomMapAttribute
+from common.dynamodb.model.SampleModel import SampleModel, SampleModelExtends, CustomMapAttribute
 
-import unittest
 
 from common.pynamo_util import model_to_dict
 

@@ -1,9 +1,9 @@
 from http import HTTPStatus
 
-from common import model_to_dict
-from common.dynamodb.model import SampleModel
+from common.pynamo_util import model_to_dict
+from common.dynamodb.model.SampleModel import SampleModel
 
-from common.awslambda import ResponseHandler
+from common.awslambda.response_handler import ResponseHandler
 
 
 @ResponseHandler.api

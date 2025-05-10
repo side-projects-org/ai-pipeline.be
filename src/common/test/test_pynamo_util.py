@@ -5,7 +5,7 @@ import uuid
 import logging
 
 
-from common.dynamodb.model import SampleModel
+from common.dynamodb.model.SampleModel import SampleModel
 from common.pynamo_util import model_to_dict
 
 logging.basicConfig(level=logging.INFO)

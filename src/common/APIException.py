@@ -1,4 +1,4 @@
-from common import ErrorCode
+from common.ErrorCode import ErrorCode
 
 
 class APIException(Exception):
