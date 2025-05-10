@@ -9,6 +9,9 @@
 build.sha
 build.zip
 
+layer.sha
+layer.zip
+
 package
 
 .terraform
