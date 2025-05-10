@@ -4,11 +4,10 @@ PROJECT_ROOT := $(shell pwd | sed 's|\(/src\).*|\1|')
 .PHONY: all zip-all clean-all diff-all
 
 ZIP_TARGET_DIRS := \
-	common \
 	$(shell find api -mindepth 2 -maxdepth 2 -type d -name "api_*") \
 	$(shell find worker -mindepth 2 -maxdepth 2 -type d -name "worker_*")
 
-# TODO common 분리하기
+ZIP_COMMON_SRC_TARGET_DIRS := common
 
 ZIP_LIBRARY_LAYER_DIR := \
 	$(shell find layer -mindepth 1 -maxdepth 1 -type d -name "layer_*")
@@ -19,21 +18,32 @@ EXCLUDE_PATTERNS := \
 	-name "*.tmp" -o \
 	-name "*.bak" -o \
 	-name "*.md" -o \
+	-name '.DS_Store' -o \
 	-name "Makefile*" -o \
 	-path "*/code/*" -o \
-	-path "*/__pycache__/*"
+	-path "*__pycache__*" -o \
+	-path "*python*"
 
 
 
-all: zip-src-all zip-layer-all
+
+clean-common-src:
+clean-all:
+
+common: zip-common-src-all
+
+all: zip-src-all zip-layer-all zip-common-src-all
+
+tapply: all
+	cd .. && cd terraform && terraform apply -auto-approve
 
 zip-layer-all:
 	@for dir in $(ZIP_LIBRARY_LAYER_DIR); do \
 		echo "\n📦 Zipping: $$dir"; \
 		\
-		BUILD_ZIP="$$dir/build.zip"; \
-		BUILD_SHA="$$dir/build.sha"; \
-		BUILD_TMP="$$dir/build.sha.tmp"; \
+		BUILD_ZIP="$$dir/layer.zip"; \
+		BUILD_SHA="$$dir/layer.sha"; \
+		BUILD_TMP="$$dir/layer.sha.tmp"; \
 		\
 		shasum -a 256 $$dir/requirements.txt \
 			| awk '{ print $$1 }'> $$BUILD_TMP; \
@@ -64,9 +74,46 @@ zip-layer-all:
 				rm -rf /opt/python/lib/python3.12/site-packages/boto3* \
 					   /opt/python/lib/python3.12/site-packages/botocore* \
 					   /opt/python/lib/python3.12/site-packages/s3transfer*"; \
-		cd $$dir/package && zip -qr ../build.zip python/*; \
+		cd $$dir/package && zip -qr ../layer.zip python/*; \
 		\
 		rm -rf $$dir/package; \
+	done
+
+
+zip-common-src-all:
+	@for dir in $(ZIP_COMMON_SRC_TARGET_DIRS); do \
+		echo "\n📦 Zipping: $$dir"; \
+		BUILD_ZIP="$$dir/layer.zip"; \
+		BUILD_SHA="$$dir/layer.sha"; \
+		BUILD_TMP="$$dir/layer.sha.tmp"; \
+		\
+		find $$dir -type f ! \( $(EXCLUDE_PATTERNS) \) -print0 \
+			| xargs -0 shasum -a 256 \
+			| awk '{ print $$1 }' \
+			| shasum -a 256 \
+			| awk '{ print $$1 }' > $$BUILD_TMP; \
+		\
+		if [ -f $$BUILD_SHA ]; then \
+			OLD=$$(cat $$BUILD_SHA); NEW=$$(cat $$BUILD_TMP); \
+			if [ "$$OLD" = "$$NEW" ]; then \
+				echo "⏸️  No changes. Skipping."; \
+				rm -f $$BUILD_TMP; \
+				continue; \
+			fi; \
+		fi; \
+		\
+		mv $$BUILD_TMP $$BUILD_SHA; \
+		\
+		rm -rf python; \
+		mkdir python; \
+		cp -r $$dir python/; \
+		\
+		zip -r $$BUILD_ZIP python/ \
+			-x "*/code/*" "*/__pycache__/*" "*.zip" "*.sha" "*.tmp" "*.bak" "*DS_Store*" \
+			-x "*/python*"; \
+		echo "✅ Zipped $$dir → $$BUILD_ZIP"; \
+		\
+		rm -rf python; \
 	done
 
 
@@ -97,17 +144,27 @@ zip-src-all:
 		echo "✅ Zipped $$dir → $$BUILD_ZIP"; \
 	done
 
-clean-all:
+clean-all: clean-src clean-layer clean-common-src
+
+clean-src:
 	@for dir in $(ZIP_TARGET_DIRS); do \
 		echo "🧹 Cleaning: $$dir"; \
 		rm -f $$dir/build.zip $$dir/build.sha $$dir/build.sha.tmp; \
 	done
-
+clean-layer:
 	@for dir in $(ZIP_LIBRARY_LAYER_DIR); do \
 		echo "🧹 Cleaning: $$dir"; \
-		rm -f $$dir/build.zip $$dir/build.sha $$dir/build.sha.tmp; \
+		rm -f $$dir/layer.zip $$dir/layer.sha $$dir/layer.sha.tmp; \
 		rm -rf $$dir/package; \
 	done
+clean-common-src:
+	@for dir in $(ZIP_COMMON_SRC_TARGET_DIRS); do \
+		echo "🧹 Cleaning: $$dir"; \
+		rm -f $$dir/layer.zip $$dir/layer.sha $$dir/layer.sha.tmp; \
+		rm -rf $$dir/package; \
+	done
+
+
 
 diff-all:
 	@for dir in $(ZIP_TARGET_DIRS); do \

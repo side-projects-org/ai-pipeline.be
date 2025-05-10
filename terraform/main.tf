@@ -8,11 +8,11 @@ resource "aws_s3_bucket" "source_build_bucket" {
 }
 
 resource "aws_s3_object" "s3_for_layer_library_common" {
-    # count = fileexists("../src/layer/layer_library_common/build.zip") ? 1 : 0
+    # count = fileexists("../src/layer/layer_library_common/layer.zip") ? 1 : 0
 
     bucket = "${var.projectName}-${var.stage}-build"
-    key = "build/${var.projectName}/layer/layer_library_common"
-    source = "../src/layer/layer_library_common/build.zip"
+    key = "build/${var.projectName}/layer/layer_library_common/layer.zip"
+    source = "../src/layer/layer_library_common/layer.zip"
 
     source_hash = filesha256("../src/layer/layer_library_common/build.zip")
 
@@ -22,7 +22,7 @@ resource "aws_s3_object" "s3_for_layer_library_common" {
 
 
 resource "aws_lambda_layer_version" "layer_library_common_version" {
-    # count = fileexists("../src/layer/layer_library_common/build.zip") ? 1 : 0
+    # count = fileexists("../src/layer/layer_library_common/layer.zip") ? 1 : 0
 
     layer_name = "${var.projectName}_layer_library_common"
 
@@ -33,15 +33,17 @@ resource "aws_lambda_layer_version" "layer_library_common_version" {
     compatible_architectures = ["arm64"]
     compatible_runtimes = ["python3.12"]
 
-    source_code_hash = filesha256("../src/layer/layer_library_common/build.zip")
+    source_code_hash = filesha256("../src/layer/layer_library_common/layer.zip")
+
+    depends_on = [aws_s3_object.s3_for_layer_library_common]
 }
 
 resource "aws_s3_object" "s3_for_layer_common" {
-    # count = fileexists("../src/common/build.zip") ? 1 : 0
+    # count = fileexists("../src/common/layer.zip") ? 1 : 0
 
     bucket = "${var.projectName}-${var.stage}-build"
-    key = "build/${var.projectName}/common"
-    source = "../src/common/build.zip"
+    key = "build/${var.projectName}/common/layer.zip"
+    source = "../src/common/layer.zip"
 
     source_hash = filesha256("../src/common/build.zip")
 
@@ -49,7 +51,7 @@ resource "aws_s3_object" "s3_for_layer_common" {
 }
 
 resource "aws_lambda_layer_version" "layer_common_version" {
-    # count = fileexists("../src/common/build.zip") ? 1 : 0
+    # count = fileexists("../src/common/layer.zip") ? 1 : 0
 
     layer_name = "${var.projectName}_layer_common"
 
@@ -60,11 +62,13 @@ resource "aws_lambda_layer_version" "layer_common_version" {
     compatible_architectures = ["arm64"]
     compatible_runtimes = ["python3.12"]
 
-    source_code_hash = filesha256("../src/common/build.zip")
+    source_code_hash = filesha256("../src/common/layer.zip")
+
+    depends_on = [aws_s3_object.s3_for_layer_common]
 }
 
 resource "aws_s3_object" "s3_for_lambda_api_sample_api_get_sample_model_by_key" {
-    # count = fileexists("../src/api/sample/api_get_sample_model_by_key/build.zip") ? 1 : 0
+    # count = fileexists("../src/api/sample/api_get_sample_model_by_key/layer.zip") ? 1 : 0
 
     bucket = "${var.projectName}-${var.stage}-build"
     key = "build/${var.projectName}/api/sample/api_get_sample_model_by_key"
@@ -82,7 +86,8 @@ data "aws_iam_policy_document" "iam_for_lambda_role" {
       identifiers = [
         "lambda.amazonaws.com",
         "sqs.amazonaws.com",
-        "rds.amazonaws.com"
+        "rds.amazonaws.com",
+        "dynamodb.amazonaws.com",
       ]
       type = "Service"
     }
