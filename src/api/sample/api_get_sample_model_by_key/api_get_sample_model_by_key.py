@@ -1,5 +1,8 @@
 from http import HTTPStatus
 
+from pynamodb.exceptions import DoesNotExist
+
+from common import APIException, ErrorCode
 from common.pynamo_util import model_to_dict
 from common.dynamodb.model.SampleModel import SampleModel
 
@@ -16,11 +19,9 @@ def lambda_handler(event, context):
 
     key = event['queryStringParameters']['key']
 
-    sample = SampleModel.get(key)
-
-    if sample is None:
-        exc = Exception(f'there is no such data [key={key}]')
-        setattr(exc, 'status_code', HTTPStatus.NOT_FOUND)
-        raise exc
+    try:
+        sample = SampleModel.get(key)
+    except DoesNotExist as e:
+        raise APIException(ErrorCode.DYNAMO_ITEM_NOT_FOUND, key=key)
 
     return model_to_dict(sample)

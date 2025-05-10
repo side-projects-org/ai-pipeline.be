@@ -16,6 +16,11 @@ class ErrorCode(Enum):
         "서버 오류가 발생했습니다.",
         "예기치 못한 서버 오류 발생: {detail}"
     )
+    DYNAMO_ITEM_NOT_FOUND = (
+        404,
+        "DynamoDB에서 항목을 찾을 수 없습니다 [search key: {key}]",
+        "DynamoDB 항목 없음: [search key: {key}]"
+    )
 
     def __init__(self, status_code: int, client_template: str, server_template: str):
         self.status_code = status_code
