@@ -53,9 +53,9 @@ resource "aws_lambda_layer_version" "layer_common_version" {
 
     layer_name = "${var.projectName}_layer_common"
 
-    s3_bucket         = aws_s3_object.s3_for_layer_library_common.bucket
-    s3_key            = aws_s3_object.s3_for_layer_library_common.key
-    s3_object_version = aws_s3_object.s3_for_layer_library_common.version_id
+    s3_bucket         = aws_s3_object.s3_for_layer_common.bucket
+    s3_key            = aws_s3_object.s3_for_layer_common.key
+    s3_object_version = aws_s3_object.s3_for_layer_common.version_id
 
     compatible_architectures = ["arm64"]
     compatible_runtimes = ["python3.12"]
