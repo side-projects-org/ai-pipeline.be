@@ -189,3 +189,25 @@ diff-all:
 		fi; \
 		rm -f $$BUILD_TMP; \
 	done
+
+.PHONY: api
+
+api:
+	@if [ -z "$(name)" ]; then \
+		echo "❌ Error: missing 'name'. Usage: make api name=ACTION [domain=DOMAIN]"; \
+		echo "EXAMPLE_1: make api name=api_get_sample_model_by_key "; \
+		echo "EXAMPLE_2: make api name=api_get_sample_model_by_key domain=sample"; \
+		exit 1; \
+	fi; \
+	domain=$${domain:-sample}; \
+	path="api/$$domain/$(name)"; \
+	file="$$path/$(name).py"; \
+	template="lambda_handler_template.py"; \
+	\
+	mkdir -p "$$path"; \
+	if [ ! -f "$$file" ]; then \
+		cp $$template "$$file"; \
+		echo "✅ Created: $$file with Lambda handler template"; \
+	else \
+		echo "⚠️ File already exists: $$file (skipped)"; \
+	fi
