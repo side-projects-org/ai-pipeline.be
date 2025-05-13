@@ -4,7 +4,7 @@ from pynamodb.exceptions import DoesNotExist
 
 from common import APIException, ErrorCode
 from common.pynamo_util import model_to_dict
-from common.dynamodb.model.SampleModel import SampleModel
+from common.dynamodb.model.MSample import MSample
 
 from common.awslambda.response_handler import ResponseHandler
 
@@ -20,7 +20,7 @@ def lambda_handler(event, context):
     key = event['queryStringParameters']['key']
 
     try:
-        sample = SampleModel.get(key)
+        sample = MSample.get(key)
     except DoesNotExist as e:
         raise APIException(ErrorCode.DYNAMO_ITEM_NOT_FOUND, key=key)
 

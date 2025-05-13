@@ -1,5 +1,5 @@
-from .SampleModel import (SampleModel, SampleGlobalIndex, SampleModelExtends, CustomMapAttribute,
-                          CustomDynamicMapAttribute, CustomMyDynamicMapAttribute)
+from .MSample import (MSample, SampleGlobalIndex, MSampleExtends, CustomMapAttribute,
+                      CustomDynamicMapAttribute, CustomMyDynamicMapAttribute)
 
-__all__ = ['SampleModel', 'SampleGlobalIndex', 'SampleModelExtends', 'CustomMapAttribute',
+__all__ = ['MSample', 'SampleGlobalIndex', 'MSampleExtends', 'CustomMapAttribute',
            'CustomDynamicMapAttribute', 'CustomMyDynamicMapAttribute']

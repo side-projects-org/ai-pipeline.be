@@ -35,7 +35,7 @@ class CustomMyDynamicMapAttribute(CDynamicMapAttribute):
     attr2 = UnicodeAttribute(null=True)
 
 
-class SampleModel(Model):
+class MSample(Model):
     key = UnicodeAttribute(hash_key=True)
 
     gsi_partition_key = UnicodeAttribute(null=True)
@@ -75,5 +75,5 @@ class SampleModel(Model):
         region = BaseConfig.AWS_REGION
 
 
-class SampleModelExtends(SampleModel):
+class MSampleExtends(MSample):
     extra_field = UnicodeAttribute(null=True)
