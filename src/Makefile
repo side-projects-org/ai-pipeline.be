@@ -25,7 +25,11 @@ EXCLUDE_PATTERNS := \
 	-path "*python*"
 
 
-
+setup:
+	@echo "Setting up the environment..."; \
+	python3 -m venv .venv; \
+	source .venv/bin/activate; \
+	pip install -r requirements.txt; \
 
 clean-common-src:
 clean-all:
