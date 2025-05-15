@@ -1,6 +1,11 @@
 from enum import Enum
 
 class ErrorCode(Enum):
+    PARAMETER_NOT_FOUND = (
+        400,
+        "요청 파라미터가 없습니다: {param}",
+        "파라미터 없음: {param}"
+    )
     INVALID_PARAMETER = (
         400,
         "요청 파라미터가 잘못되었습니다: {param}",

@@ -1,5 +1,10 @@
-from .SampleModel import (SampleModel, SampleGlobalIndex, SampleModelExtends, CustomMapAttribute,
-                          CustomDynamicMapAttribute, CustomMyDynamicMapAttribute)
+from .Sample import (Sample, SampleGlobalIndex, SampleExtends, CustomMapAttribute,
+                     CustomDynamicMapAttribute, CustomMyDynamicMapAttribute)
+from .Prompt import *
 
-__all__ = ['SampleModel', 'SampleGlobalIndex', 'SampleModelExtends', 'CustomMapAttribute',
+class M:
+    Sample = Sample
+    Prompt = Prompt
+
+__all__ = ['Sample', 'SampleGlobalIndex', 'SampleExtends', 'CustomMapAttribute',
            'CustomDynamicMapAttribute', 'CustomMyDynamicMapAttribute']
