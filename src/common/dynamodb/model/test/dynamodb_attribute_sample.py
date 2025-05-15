@@ -7,7 +7,7 @@ import uuid
 
 from pynamodb.exceptions import PutError
 
-from common.dynamodb.model.MSample import MSample, MSampleExtends, CustomMapAttribute
+from common.dynamodb.model import M, SampleExtends, CustomMapAttribute
 
 
 from common.pynamo_util import model_to_dict
@@ -46,12 +46,12 @@ class DynamoDBDaoSample(unittest.TestCase):
             'gsi_sort_key': 'gsi_sort_key'
         }
 
-        sample = MSample(**given_dict)
+        sample = M.Sample(**given_dict)
 
         # when
         sample.save()
 
-        read_sample = MSample.get(uuid_key)
+        read_sample = M.Sample.get(uuid_key)
         logger.info("save success")
 
         # then
@@ -96,7 +96,7 @@ class DynamoDBDaoSample(unittest.TestCase):
         self.assertEqual('gsi_sort_key', read_sample.gsi_sort_key)
 
         # when
-        sample.update(actions=[MSample.unicode_attr.set('unicode_attr2')])
+        sample.update(actions=[M.Sample.unicode_attr.set('unicode_attr2')])
 
         # then
         self.assertEqual('unicode_attr2', sample.unicode_attr)
@@ -114,10 +114,10 @@ class DynamoDBDaoSample(unittest.TestCase):
         }
 
         # Create
-        sample = MSample(**given_dict)
+        sample = M.Sample(**given_dict)
         sample.save()
 
-        read_sample = MSample.get(uuid_key)
+        read_sample = M.Sample.get(uuid_key)
 
         # then
         self.assertEqual(uuid_key, read_sample.key)
@@ -125,8 +125,8 @@ class DynamoDBDaoSample(unittest.TestCase):
             self.assertEqual(given_dict['list_attr'][e], read_sample.list_attr[e])
 
         # when: Update
-        read_sample.update(actions=[MSample.list_attr.set(
-            MSample.list_attr.append(['b'])
+        read_sample.update(actions=[M.Sample.list_attr.set(
+            M.Sample.list_attr.append(['b'])
         )])
 
         # then
@@ -145,13 +145,13 @@ class DynamoDBDaoSample(unittest.TestCase):
             'list_attr_fix_primitive_type': [1, 2, 3]
         }
 
-        sample = MSample(**given_dict)
+        sample = M.Sample(**given_dict)
 
         # when: Create
         sample.save()
 
         # Read
-        read_sample = MSample.get(uuid_key)
+        read_sample = M.Sample.get(uuid_key)
 
         # then
         self.assertEqual(uuid_key, read_sample.key)
@@ -160,13 +160,13 @@ class DynamoDBDaoSample(unittest.TestCase):
         # Update
         # 동일한 Path 를 업데이트를 할 수 없어서 나눠서 업데이트
         read_sample.update(actions=[
-            MSample.list_attr_fix_object_type[0].attr1.set('c'),
-            MSample.list_attr_fix_primitive_type[0].set(4),
+            M.Sample.list_attr_fix_object_type[0].attr1.set('c'),
+            M.Sample.list_attr_fix_primitive_type[0].set(4),
         ])
 
         read_sample.update(actions=[
-            MSample.list_attr_fix_primitive_type.set(
-                MSample.list_attr_fix_primitive_type.append([5, ]),
+            M.Sample.list_attr_fix_primitive_type.set(
+                M.Sample.list_attr_fix_primitive_type.append([5, ]),
             )
         ])
 
@@ -191,7 +191,7 @@ class DynamoDBDaoSample(unittest.TestCase):
         }
 
         # Create
-        model = MSample(**given_dict)
+        model = M.Sample(**given_dict)
         model.save()
 
         # then
@@ -203,7 +203,7 @@ class DynamoDBDaoSample(unittest.TestCase):
 
         # Create & Error
         with self.assertRaises(TypeError):
-            MSample(**given_dict2).save()
+            M.Sample(**given_dict2).save()
 
     def test_put_different_type_in_ListAttribute_of_primitive_type(self):
         """[개발 시 주의] 선언 타입(primitive)과 다른 타입이 들어오면 PutError 발생"""
@@ -217,7 +217,7 @@ class DynamoDBDaoSample(unittest.TestCase):
         # when
         # then
         with self.assertRaises(PutError):
-            MSample(**given_dict).save()
+            M.Sample(**given_dict).save()
 
     def test_DynamicMapAttribute_CRUD(self):
         """DynamicMapAttribute 을 통한 CRUD 성공 테스트"""
@@ -228,11 +228,11 @@ class DynamoDBDaoSample(unittest.TestCase):
             'dynamic_map_attr': {'unknown_attr': 'a', 'unknown_attr2': 'b'}
         }
 
-        sample = MSample(**given_dict)
+        sample = M.Sample(**given_dict)
 
         # when
         sample.save()
-        read_sample = MSample.get(uuid_key)
+        read_sample = M.Sample.get(uuid_key)
 
         # then
         self.assertEqual(uuid_key, sample.key)
@@ -242,7 +242,7 @@ class DynamoDBDaoSample(unittest.TestCase):
 
         # when
         # save unexpected attributes in dynamic map
-        sample.update(actions=[MSample.dynamic_map_attr['unknown_attr'].set('c')])
+        sample.update(actions=[M.Sample.dynamic_map_attr['unknown_attr'].set('c')])
 
         # then
         self.assertEqual('c', sample.dynamic_map_attr.unknown_attr)
@@ -259,11 +259,11 @@ class DynamoDBDaoSample(unittest.TestCase):
             'custom_wrapping_dynamic_map_attr': {'attr1': 'a', 'attr2': 'b', 'unknown_attr': 'c'}
         }
 
-        sample = MSample(**given_dict)
+        sample = M.Sample(**given_dict)
 
         # Create
         sample.save()
-        read_sample = MSample.get(uuid_key)
+        read_sample = M.Sample.get(uuid_key)
 
         # then
         self.assertEqual(uuid_key, sample.key)
@@ -274,8 +274,8 @@ class DynamoDBDaoSample(unittest.TestCase):
 
         # Update
         sample.update(actions=[
-            MSample.custom_wrapping_dynamic_map_attr.attr1.set('c'),                # 정의된 필드 변경
-            MSample.custom_wrapping_dynamic_map_attr['unknown_attr'].remove()       # 정의되지 않은 필드 변경 및 삭제
+            M.Sample.custom_wrapping_dynamic_map_attr.attr1.set('c'),                # 정의된 필드 변경
+            M.Sample.custom_wrapping_dynamic_map_attr['unknown_attr'].remove()       # 정의되지 않은 필드 변경 및 삭제
         ])
 
         # then
@@ -313,12 +313,12 @@ class DynamoDBDaoSample(unittest.TestCase):
         }
 
         # Create
-        sample = MSampleExtends(**given_dict)
+        sample = SampleExtends(**given_dict)
         sample.save()
 
         # Read
-        read_sample = MSample.get(uuid_key)
-        read_sample_extends = MSampleExtends.get(uuid_key)
+        read_sample = M.Sample.get(uuid_key)
+        read_sample_extends = SampleExtends.get(uuid_key)
         result_dict = model_to_dict(read_sample)
         # then
 
