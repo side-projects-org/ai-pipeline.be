@@ -5,7 +5,7 @@ import uuid
 import logging
 
 from common.Json import ClsJsonEncoder
-from common.dynamodb.model.MSample import MSample
+from common.dynamodb.model.Sample import Sample
 from common.pynamo_util import model_to_dict
 
 logging.basicConfig(level=logging.INFO)
@@ -38,7 +38,7 @@ class TestPynamoUtil(unittest.TestCase):
             'custom_wrapping_dynamic_map_attr': {'attr1': 'a', 'attr2': 'b', 'unknown_attr': 'c'}
         }
 
-        sample = MSample(**given_dict)
+        sample = Sample(**given_dict)
         sample.save()
 
         # read_sample = SampleModel.get(uuid_key)
@@ -63,7 +63,7 @@ class TestPynamoUtil(unittest.TestCase):
 
     def test(self):
         key = 'c6ed6a51-5381-4041-a146-a2f45592cbe0'
-        sample = MSample.get(key)
+        sample = Sample.get(key)
 
         sample_dict = model_to_dict(sample)
 
