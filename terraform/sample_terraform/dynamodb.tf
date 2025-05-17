@@ -50,7 +50,7 @@ resource "aws_dynamodb_table" "prompt_dynamodb_table" {
     projection_type    = "ALL"
   }
   global_secondary_index {
-    name               = "prompt_version_created_at_index"
+    name               = "version_created_at_index"
     hash_key           = "version"
     range_key          = "created_at"
     projection_type    = "ALL"
