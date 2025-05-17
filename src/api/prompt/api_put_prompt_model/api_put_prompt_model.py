@@ -1,10 +1,9 @@
 import json
 import uuid
-from datetime import datetime
+from datetime import datetime, timezone
 
 from common import APIException, ErrorCode
 from common.pynamo_util import model_to_dict
-from common.dynamodb.model import M
 
 from common.awslambda.response_handler import ResponseHandler
 
@@ -35,7 +34,7 @@ def lambda_handler(event, context):
         body = json.loads(event.get("body", "{}"))
         validate_required_keys(body)
         key=uuid.uuid4().__str__()
-        version =datetime.utcnow().isoformat() if "version" not in body else body["version"]
+        version =datetime.now(timezone.utc).isoformat() if "version" not in body else body["version"]
         # TODO messages 형태도 미리 검증하면 좋을 듯
         prompt = Prompt(
             key=key,
@@ -48,20 +47,14 @@ def lambda_handler(event, context):
                 max_completion_tokens=body["max_completion_tokens"],
                 response_format="text",
             ),
-            created_at=datetime.utcnow(),
-            updated_at=datetime.utcnow(),
+            created_at=datetime.now(timezone.utc),
+            updated_at=datetime.now(timezone.utc),
         )
         prompt.save()
-        return {
-            "statusCode": 200,
-            "body": json.dumps({"message": "Prompt saved successfully", "key": model_to_dict(prompt)},ensure_ascii=False, default=str)
-        }
+        return model_to_dict(prompt)
     except ValueError as valueError:
         raise APIException(ErrorCode.PARAMETER_NOT_FOUND, param=str(valueError))
     except Exception as e:
-        return {
-            "statusCode": 500,
-            "body": json.dumps({"error": str(e)})
-        }
+        raise APIException(ErrorCode.INTERNAL_ERROR, detail=str(e))
 
 
