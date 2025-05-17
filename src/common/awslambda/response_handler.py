@@ -23,7 +23,7 @@ def _api_handler(func):
             response_body = None
             try:
                 # TODO JSON util 로 빼기
-                response_body = json.dumps(response_data, cls=ClsJsonEncoder, ensure_ascii=False)
+                response_body = json.dumps(response_data, cls=ClsJsonEncoder, ensure_ascii=False, default=str)
             except Exception as e:
                 logger.error(f"JSON serialization error: {e}")
                 response_body = e.__cause__
