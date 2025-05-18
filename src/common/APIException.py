@@ -18,3 +18,14 @@ class APIException(Exception):
             self.server_log = f"[서버로그 템플릿 오류] {e} 키 누락"
 
         super().__init__(self.message)
+
+
+    def build_aws_response(self):
+        return {
+            "statusCode": self.status_code,
+            "headers": {
+                "Content-Type": "application/json",
+            },
+            "isBase64Encoded": False,
+            "body": self.message
+        }

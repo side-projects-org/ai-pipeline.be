@@ -1,10 +1,10 @@
-import json
 import logging
 
 from http import HTTPStatus
 
 from common.APIException import APIException
-from common.Json import ClsJsonEncoder
+from common.Json import Json
+from common.dict_util import deep_update
 
 logging.basicConfig(level=logging.INFO)
 
@@ -17,41 +17,34 @@ def _api_handler(func):
         context = args[1]
         logger.info(event)
 
+        response = {
+            "statusCode": 200,
+            "headers": {
+                "Content-Type": "application/json",
+            },
+            "isBase64Encoded": False,
+            "body": "" # None or ""
+        }
+
+        response_data = None
         try:
+            # 람다를 실행
             response_data = func(event, context)
 
-            response_body = None
-            try:
-                # TODO JSON util 로 빼기
-                response_body = json.dumps(response_data, cls=ClsJsonEncoder, ensure_ascii=False, default=str)
-            except Exception as e:
-                logger.error(f"JSON serialization error: {e}")
-                response_body = e.__cause__
-
-            # TODO response builder 로 빼기
-            response = {
-                'statusCode': HTTPStatus.OK,
-                'headers': {
-                    'Content-Type': 'application/json',
-                },
-                'body': response_body
-            }
+            response['body'] = Json.dumps(response_data)
         except APIException as e:
-            logger.error(e.server_log)  # -> 잘못된 파라미터 입력: user_id
+            logger.error(e.server_log)
 
-            response_body = json.dumps({
-                'CODE': e.error_code.name,
-                'message': e.message,
-                'data': e.kwargs
-            }, cls=ClsJsonEncoder, ensure_ascii=False)
+            deep_update(response, e.build_aws_response())
+        except Exception as e:
+            logger.error(e)
 
-            response = {
-                'statusCode': e.status_code,
-                'headers': {
-                    'Content-Type': 'application/json',
-                },
-                'body': response_body,
-            }
+            deep_update(response, {
+                "statusCode": HTTPStatus.INTERNAL_SERVER_ERROR,
+                "body": Json.dumps({
+                    "error": str(e)
+                })
+            })
 
         return response
 
