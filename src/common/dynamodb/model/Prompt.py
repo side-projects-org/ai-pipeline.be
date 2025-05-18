@@ -44,6 +44,15 @@ class AIRequestParamsAttribute(CDynamicMapAttribute):
     max_tokens = NumberAttribute(null=True)  # 최대 토큰 수
     response_format = UnicodeAttribute(null=True)  # 응답 형식
 
+
+class VersionCreatedAtIndex(GlobalSecondaryIndex):
+    class Meta:
+        index_name = "version_created_at_index"
+        projection = AllProjection()
+
+    version = UnicodeAttribute(hash_key=True)
+    created_at = UTCDateTimeAttribute(range_key=True)
+
 class PromptNameVersionIndex(GlobalSecondaryIndex):
     class Meta:
         index_name = "prompt_name_version_index"
@@ -59,7 +68,7 @@ class PromptNameCreatedAtIndex(GlobalSecondaryIndex):
         projection = AllProjection()
 
     prompt_name = UnicodeAttribute(hash_key=True)
-    createdAt = UTCDateTimeAttribute(range_key=True)
+    created_at = UTCDateTimeAttribute(range_key=True)
 
 
 
@@ -79,8 +88,9 @@ class Prompt(Model):
     best_model = UnicodeAttribute(null=True)  # 가장 좋은 모델
 
     # gsi
-    prompt_version_index = PromptNameVersionIndex()
+    prompt_name_version_index = PromptNameVersionIndex()
     prompt_name_created_at_index = PromptNameCreatedAtIndex()
+    version_created_at_index = VersionCreatedAtIndex()
 
     print(f"table: {BaseConfig.PROJECT_NAME}_{BaseConfig.STAGE_NAME}_prompt")
     class Meta:

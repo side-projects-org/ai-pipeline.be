@@ -14,5 +14,4 @@ resource "aws_apigatewayv2_stage" "default" {
   name        = "$default"
   auto_deploy = true
 
-  depends_on = [module.api_get_sample_model_by_key.route_id]
 }
