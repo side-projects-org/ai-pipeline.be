@@ -45,26 +45,28 @@ class AIRequestParamsAttribute(CDynamicMapAttribute):
     response_format = UnicodeAttribute(null=True)  # 응답 형식
 
 
-class VersionPromptNameIndex(GlobalSecondaryIndex):
+class Version_PromptName_Index(GlobalSecondaryIndex):
     class Meta:
-        index_name = "version_prompt_name_index"
+        index_name = "version-prompt_name-index"
         projection = AllProjection()
 
     version = UnicodeAttribute(hash_key=True)
     created_at = UTCDateTimeAttribute(range_key=True)
 
-class PromptNameVersionIndex(GlobalSecondaryIndex):
+
+class PromptName_Version_Index(GlobalSecondaryIndex):
     class Meta:
-        index_name = "prompt_name_version_index"
+        index_name = "prompt_name-version-index"
         projection = AllProjection()
 
     prompt_name = UnicodeAttribute(hash_key=True)
     version = UnicodeAttribute(range_key=True)
 
 
-class PromptNameCreatedAtIndex(GlobalSecondaryIndex):
+
+class PromptName_CreatedAt_Index(GlobalSecondaryIndex):
     class Meta:
-        index_name = "prompt_name_created_at_index"
+        index_name = "prompt_name-created_at-index"
         projection = AllProjection()
 
     prompt_name = UnicodeAttribute(hash_key=True)
@@ -78,6 +80,8 @@ class Prompt(Model):
     prompt_name = UnicodeAttribute(null=False)  # 프롬프트의 이름
     version = UnicodeAttribute(null=False)  # 버전
 
+    item_type = UnicodeAttribute(null=False, default="prompt")  # 아이템 타입
+
     params = AIRequestParamsAttribute(null=True)
 
     applied_version = UnicodeAttribute(null=True)  # 적용된 버전
@@ -88,11 +92,12 @@ class Prompt(Model):
     best_model = UnicodeAttribute(null=True)  # 가장 좋은 모델
 
     # gsi
-    prompt_name_version_index = PromptNameVersionIndex()
-    prompt_name_created_at_index = PromptNameCreatedAtIndex()
-    version_prompt_name_index = VersionPromptNameIndex()
+    # TODO item_type 추가 해야함
+    prompt_name__version__index = PromptName_Version_Index()
+    prompt_name__created_at__index = PromptName_CreatedAt_Index()
+    version__prompt_name__index = Version_PromptName_Index()
 
-    print(f"table: {BaseConfig.PROJECT_NAME}_{BaseConfig.STAGE_NAME}_prompt")
+
     class Meta:
         table_name = f"{BaseConfig.PROJECT_NAME}_{BaseConfig.STAGE_NAME}_prompt"
         region = BaseConfig.AWS_REGION

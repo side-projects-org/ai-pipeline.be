@@ -38,19 +38,19 @@ resource "aws_dynamodb_table" "prompt_dynamodb_table" {
   }
 
   global_secondary_index {
-    name               = "prompt_name_version_index"
+    name               = "prompt_name-version-index"
     hash_key           = "prompt_name"
     range_key          = "version"
     projection_type    = "ALL"
   }
   global_secondary_index {
-    name               = "prompt_name_created_at_index"
+    name               = "prompt_name-created_at-index"
     hash_key           = "prompt_name"
     range_key          = "created_at"
     projection_type    = "ALL"
   }
   global_secondary_index {
-    name               = "version_prompt_name_index"
+    name               = "version-prompt_name-index"
     hash_key           = "version"
     range_key          = "prompt_name"
     projection_type    = "ALL"
