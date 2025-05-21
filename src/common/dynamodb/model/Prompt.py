@@ -45,9 +45,9 @@ class AIRequestParamsAttribute(CDynamicMapAttribute):
     response_format = UnicodeAttribute(null=True)  # 응답 형식
 
 
-class VersionCreatedAtIndex(GlobalSecondaryIndex):
+class VersionPromptNameIndex(GlobalSecondaryIndex):
     class Meta:
-        index_name = "version_created_at_index"
+        index_name = "version_prompt_name_index"
         projection = AllProjection()
 
     version = UnicodeAttribute(hash_key=True)
@@ -90,7 +90,7 @@ class Prompt(Model):
     # gsi
     prompt_name_version_index = PromptNameVersionIndex()
     prompt_name_created_at_index = PromptNameCreatedAtIndex()
-    version_created_at_index = VersionCreatedAtIndex()
+    version_prompt_name_index = VersionPromptNameIndex()
 
     print(f"table: {BaseConfig.PROJECT_NAME}_{BaseConfig.STAGE_NAME}_prompt")
     class Meta:

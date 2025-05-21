@@ -15,7 +15,7 @@ def lambda_handler(event, context):
         if requestPromptName == "":  # 이름 명시되지 않은 경우
             if requestVersion == "": # 버전 없다면 기본값 LATEST로 검색
                 requestVersion="LATEST"
-            target = Prompt.version_created_at_index.query(requestVersion)
+            target = Prompt.version_prompt_name_index.query(requestVersion)
         else:  # 이름 명시된 경우
             if requestVersion == "": # 버전 없다면 해당 프롬프트 이름의 모든 버전 검색
                 target = Prompt.prompt_name_version_index.query(requestPromptName)
