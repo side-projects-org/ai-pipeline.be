@@ -24,7 +24,7 @@ def lambda_handler(event, context):
         print("name", requestPromptName)
         print("ver", requestVersion)
         # TODO message도 dict 꼴로 전달해야 할지 확인
-        result = [model_to_dict(prompt) for prompt in target]
+        result = [prompt.to_simple_dict() for prompt in target]
         return result
 
     except Exception as e:

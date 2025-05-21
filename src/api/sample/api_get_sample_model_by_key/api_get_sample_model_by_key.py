@@ -24,4 +24,4 @@ def lambda_handler(event, context):
     except DoesNotExist as e:
         raise APIException(ErrorCode.DYNAMO_ITEM_NOT_FOUND, key=key)
 
-    return model_to_dict(sample)
+    return sample.to_simple_dict()

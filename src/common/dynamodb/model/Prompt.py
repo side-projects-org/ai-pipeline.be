@@ -5,7 +5,7 @@ from pynamodb.attributes import UnicodeAttribute, MapAttribute, ListAttribute, D
 
 from common.constants import BaseConfig
 from common.dynamodb.attributes.CustomAttribute import CDynamicMapAttribute
-
+from common.dynamodb.model.MyModel import MyModel
 
 prompt_dict_sample = {
     "key": "sample_key",
@@ -36,7 +36,7 @@ class AIMessageAttribute(MapAttribute):
     content = UnicodeAttribute(null=False)  # 메시지 내용
 
 
-class AIRequestParamsAttribute(CDynamicMapAttribute):
+class AIRequestParamsAttribute(DynamicMapAttribute):
     model = UnicodeAttribute(null=True)  # 모델 이름
     messages = ListAttribute(of=AIMessageAttribute, null=True)  # 메시지 리스트
     temperature = NumberAttribute(null=True)  # 온도
