@@ -38,9 +38,6 @@ common: zip-common-src-all
 
 all: zip-src-all zip-layer-all zip-common-src-all
 
-tapply: all
-	cd .. && cd terraform && terraform apply -auto-approve
-
 zip-layer-all:
 	@for dir in $(ZIP_LIBRARY_LAYER_DIR); do \
 		echo "\n📦 Zipping: $$dir"; \
