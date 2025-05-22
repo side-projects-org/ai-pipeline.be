@@ -5,7 +5,6 @@ from pynamodb.attributes import UnicodeAttribute, MapAttribute, ListAttribute, D
 
 from common.constants import BaseConfig
 from common.dynamodb.attributes.CustomAttribute import CDynamicMapAttribute
-from common.dynamodb.model.MyModel import MyModel
 
 prompt_dict_sample = {
     "key": "sample_key",

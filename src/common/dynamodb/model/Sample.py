@@ -71,7 +71,7 @@ class Sample(Model):
     sample_global_index = SampleGlobalIndex()
 
     class Meta:
-        table_name = "dlsj-lsj2"
+        table_name = "test2"
         region = BaseConfig.AWS_REGION
 
 
