@@ -29,4 +29,4 @@ class BaseConfig:
     PROJECT_NAME = get_env('PROJECT_NAME', '../../project_env/live/project_name.txt')
     STAGE_NAME = get_env('STAGE_NAME', '../../project_env/live/stage_name.txt')
     FCM_KEY = get_env('FCM_KEY', '../../project_env/live/fcm_key.txt')
-    OPEN_AI_KEY = get_env('OPEN_AI_KEY', '../../project_env/live/openai_api_key.txt')
+    OPEN_AI_KEY = get_env('OPEN_AI_KEY', '../../project_env/live/open_ai_key.txt')

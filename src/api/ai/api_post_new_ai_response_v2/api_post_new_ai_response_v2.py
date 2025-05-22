@@ -1,8 +1,11 @@
-import requests
+from openai import OpenAI
 
 from common import BaseConfig
+
 from common.awslambda.request_util import get_body
 from common.awslambda.response_handler import ResponseHandler
+
+client = OpenAI(api_key=BaseConfig.OPEN_AI_KEY)
 
 @ResponseHandler.api
 def lambda_handler(event, context):
@@ -10,23 +13,10 @@ def lambda_handler(event, context):
     # ChatGPT API 를 호출하여 응답을 받아온다.
     body = get_body(event)
 
-    header = {
-        'Content-Type': 'application/json',
-        'Authorization': f'Bearer {BaseConfig.OPEN_AI_KEY}'
-    }
-
-    response = requests.post(
-        'https://api.openai.com/v1/chat/completions',
-        headers=header,
-        json={
-            'model': body['model'],
-            'messages': body['messages'],
-            'temperature': body['temperature'],
-            'max_tokens': body['max_completion_tokens']
-        }
-    )
-
-    data = response.json()
+    response = client.chat.completions.create(model=body['model'],
+    messages=body['messages'],
+    temperature=body['temperature'],
+    max_tokens=body['max_completion_tokens'])
 
     return {
         'used_params': {
@@ -35,5 +25,5 @@ def lambda_handler(event, context):
             'temperature': body['temperature'],
             'max_tokens': body['max_completion_tokens']
         },
-        'response': data
+        'response': response.to_dict()
     }

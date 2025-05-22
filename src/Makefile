@@ -75,7 +75,7 @@ zip-layer-all:
 				rm -rf /opt/python/lib/python3.12/site-packages/boto3* \
 					   /opt/python/lib/python3.12/site-packages/botocore* \
 					   /opt/python/lib/python3.12/site-packages/s3transfer*"; \
-		cd $$dir/package && zip -qr ../layer.zip python/*; \
+		cd $$dir/package && zip -qr ../layer.zip python/* && du -h ../layer.zip; \
 		\
 		rm -rf $$dir/package; \
 	done
