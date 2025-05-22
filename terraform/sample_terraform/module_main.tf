@@ -16,8 +16,8 @@ module "api_get_prompt_model_list" {
     ]
 
   environment_variables = {
-      project_name = var.projectName
-      stage_name   = var.stage
+      PROJECT_NAME = var.projectName
+      STAGE_NAME   = var.stage
   }
 
   api_gateway_id  = aws_apigatewayv2_api.http_api.id
@@ -43,8 +43,8 @@ module "api_put_prompt_model" {
     ]
 
   environment_variables = {
-      project_name = var.projectName
-      stage_name   = var.stage
+      PROJECT_NAME = var.projectName
+      STAGE_NAME   = var.stage
   }
 
   api_gateway_id  = aws_apigatewayv2_api.http_api.id

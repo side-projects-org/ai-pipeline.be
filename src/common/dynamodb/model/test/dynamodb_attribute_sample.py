@@ -54,6 +54,8 @@ class DynamoDBDaoSample(unittest.TestCase):
         read_sample = M.Sample.get(uuid_key)
         logger.info("save success")
 
+        read_sample_dict = read_sample.to_simple_dict()
+
         # then
         self.assertEqual(uuid_key, read_sample.key)
         self.assertEqual('unicode_attr', read_sample.unicode_attr)
@@ -82,15 +84,18 @@ class DynamoDBDaoSample(unittest.TestCase):
         logger.info(f'\nexpect: {given_dict["custom_map_attr"]}')
         logger.info(f'dynamic_map_attr: {read_sample.dynamic_map_attr}')
         logger.info(f'dynamic_map_attr.as_dict(): {read_sample.dynamic_map_attr.as_dict()}')
-        logger.info(f'dynamic_map_attr.to_simple_dict(): {read_sample.dynamic_map_attr.to_simple_dict()}\n')
+        logger.info(f'dynamic_map_attr.to_simple_dict(): {read_sample.dynamic_map_attr.to_simple_dict()}')
+        logger.info(f'read_sample_dict[\'custom_map_attr\']: {read_sample_dict["custom_map_attr"]}\n')
 
         logger.info(f'custom_map_attr: {read_sample.custom_map_attr}')
         logger.info(f'custom_map_attr.as_dict(): {read_sample.custom_map_attr.as_dict()}')
-        logger.info(f'custom_map_attr.to_simple_dict(): {read_sample.custom_map_attr.to_simple_dict()}\n')
+        logger.info(f'custom_map_attr.to_simple_dict(): {read_sample.custom_map_attr.to_simple_dict()}')
+        logger.info(f'read_sample_dict[\'custom_dynamic_map_attr\']: {read_sample_dict["custom_dynamic_map_attr"]}\n')
 
         logger.info(f'custom_dynamic_map_attr: {read_sample.custom_dynamic_map_attr}')
         logger.info(f'custom_dynamic_map_attr.as_dict(): {read_sample.custom_dynamic_map_attr.as_dict()}')
-        logger.info(f'custom_dynamic_map_attr.to_simple_dict()(): {read_sample.custom_dynamic_map_attr.to_simple_dict()}\n')
+        logger.info(f'custom_dynamic_map_attr.to_simple_dict(): {read_sample.custom_dynamic_map_attr.to_simple_dict()}')
+        logger.info(f'read_sample_dict[\'custom_dynamic_map_attr\']: {read_sample_dict["custom_dynamic_map_attr"]}\n')
 
         self.assertEqual('gsi_partition_key', read_sample.gsi_partition_key)
         self.assertEqual('gsi_sort_key', read_sample.gsi_sort_key)

@@ -26,10 +26,6 @@ def get_env(env_name, filename, default='not-assigned'):
 class BaseConfig:
     AWS_REGION = 'ap-northeast-2'
 
-    PROJECT_NAME = os.getenv('project_name')
-    STAGE_NAME = os.getenv('stage_name')
-    FCM_KEY = os.getenv('FCM_KEY')
-    #local
-    # PROJECT_NAME = get_env('PROJECT_NAME', '../../project_env/live/project_name.txt')
-    # STAGE_NAME = get_env('STAGE_NAME', '../../project_env/live/stage_name.txt')
-    # FCM_KEY = get_env('FCM_KEY', '../../project_env/live/fcm_key.txt')
+    PROJECT_NAME = get_env('PROJECT_NAME', '../../project_env/live/project_name.txt')
+    STAGE_NAME = get_env('STAGE_NAME', '../../project_env/live/stage_name.txt')
+    FCM_KEY = get_env('FCM_KEY', '../../project_env/live/fcm_key.txt')

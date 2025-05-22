@@ -51,7 +51,10 @@ def lambda_handler(event, context):
             updated_at=datetime.now(timezone.utc),
         )
         prompt.save()
-        return model_to_dict(prompt)
+
+        data = prompt.to_simple_dict()
+        print(f'{data}')
+        return data
     except ValueError as valueError:
         raise APIException(ErrorCode.PARAMETER_NOT_FOUND, param=str(valueError))
     except Exception as e:

@@ -13,3 +13,13 @@ class ClsJsonEncoder(json.JSONEncoder):
             return str(obj)
         else:
             return super().default(obj)
+
+
+class Json:
+    @staticmethod
+    def dumps(obj, **kwargs):
+        return json.dumps(obj, cls=ClsJsonEncoder, ensure_ascii=False, **kwargs)
+
+    @staticmethod
+    def loads(json_str, **kwargs):
+        return json.loads(json_str, **kwargs)

@@ -2,7 +2,7 @@ resource "aws_apigatewayv2_api" "http_api" {
   name          = "${var.projectName}-${var.stage}"
   protocol_type = "HTTP"
   cors_configuration {
-    allow_origins = ["https://main.d2x72b47hczm52.amplifyapp.com", "http://localhost"]
+    allow_origins = ["https://main.d2x72b47hczm52.amplifyapp.com", "http://localhost:3000"]
     allow_methods = ["*"]
     allow_headers = ["Content-Type", "Authorization"]
     max_age       = 3600

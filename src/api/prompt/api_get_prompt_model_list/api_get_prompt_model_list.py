@@ -15,16 +15,16 @@ def lambda_handler(event, context):
         if requestPromptName == "":  # 이름 명시되지 않은 경우
             if requestVersion == "": # 버전 없다면 기본값 LATEST로 검색
                 requestVersion="LATEST"
-            target = Prompt.version_created_at_index.query(requestVersion)
+            target = Prompt.version__prompt_name__index.query(requestVersion)
         else:  # 이름 명시된 경우
             if requestVersion == "": # 버전 없다면 해당 프롬프트 이름의 모든 버전 검색
-                target = Prompt.prompt_name_version_index.query(requestPromptName)
+                target = Prompt.prompt_name__version__index.query(requestPromptName)
             else: # 버전 있다면 해당 버전으로 검색
-                target = Prompt.prompt_name_version_index.query(requestPromptName,Prompt.version == requestVersion)
+                target = Prompt.prompt_name__version__index.query(requestPromptName, Prompt.version == requestVersion)
         print("name", requestPromptName)
         print("ver", requestVersion)
         # TODO message도 dict 꼴로 전달해야 할지 확인
-        result = [model_to_dict(prompt) for prompt in target]
+        result = [prompt.to_simple_dict() for prompt in target]
         return result
 
     except Exception as e:
