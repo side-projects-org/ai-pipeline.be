@@ -10,6 +10,12 @@ variable stage {
   default     = "not-assigned"
 }
 
+variable openAIKey {
+    description = "openAI key"
+    type        = string
+    default     = "not-assigned"
+}
+
 variable awsAccountId {
   description = "aws account id"
   type        = string
