@@ -1,3 +1,3 @@
-from .CustomAttribute import CDynamicMapAttribute, CMapAttribute
+from .CustomAttribute import CDynamicMapAttribute
 
-__all__ = ['CDynamicMapAttribute', 'CMapAttribute']
+__all__ = ['CDynamicMapAttribute']

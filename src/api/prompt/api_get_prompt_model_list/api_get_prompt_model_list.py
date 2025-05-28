@@ -1,5 +1,4 @@
 from common import APIException, ErrorCode
-from common.pynamo_util import model_to_dict
 from common.dynamodb.model import Prompt
 
 from common.awslambda.response_handler import ResponseHandler

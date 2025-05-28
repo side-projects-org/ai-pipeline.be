@@ -7,10 +7,9 @@ import uuid
 
 from pynamodb.exceptions import PutError
 
+from common.Json import Json
 from common.dynamodb.model import M, SampleExtends, CustomMapAttribute
 
-
-from common.pynamo_util import model_to_dict
 
 # logger 는 info 까지 출력되어야햄
 logger = logging.getLogger(__name__)
@@ -34,8 +33,6 @@ class DynamoDBDaoSample(unittest.TestCase):
             'num_attr': 1,
             'utc_datetime_attr': now,
             'ttl_attr': now,
-            # 'unicode_set_attr': {'a', 'b'},
-            # 'num_set_attr': {1, 2},
             'list_attr': [1, 'a', True],
             'list_attr_fix_object_type': [{'attr1': 'a', 'attr2': 'b'}],
             'list_attr_fix_primitive_type': [1, 2, 3],
@@ -70,11 +67,7 @@ class DynamoDBDaoSample(unittest.TestCase):
         logger.info(f'read_sample.ttl_attr: {read_sample.ttl_attr}')
         self.assertTrue(now.timestamp(), read_sample.ttl_attr)   # ttl_attr 은 timestamp 로 비교해야한다.
 
-        # self.assertEqual({'a', 'b'}, read_sample.unicode_set_attr)
-        # self.assertEqual({1, 2}, read_sample.num_set_attr)
         self.assertEqual([1, 'a', True], read_sample.list_attr)
-
-        self.maxDiff = None
 
         self.assertEqual({'attr1': 'a', 'attr2': 'b'}, read_sample.list_attr_fix_object_type[0].as_dict())
         self.assertEqual(CustomMapAttribute, type(read_sample.list_attr_fix_object_type[0]))
@@ -85,17 +78,17 @@ class DynamoDBDaoSample(unittest.TestCase):
         logger.info(f'dynamic_map_attr: {read_sample.dynamic_map_attr}')
         logger.info(f'dynamic_map_attr.as_dict(): {read_sample.dynamic_map_attr.as_dict()}')
         logger.info(f'dynamic_map_attr.to_simple_dict(): {read_sample.dynamic_map_attr.to_simple_dict()}')
-        logger.info(f'read_sample_dict[\'custom_map_attr\']: {read_sample_dict["custom_map_attr"]}\n')
+        logger.info(f'dynamic_map_attr.to_simple_dict()[\'custom_map_attr\']: {read_sample_dict["custom_map_attr"]}\n')
 
         logger.info(f'custom_map_attr: {read_sample.custom_map_attr}')
         logger.info(f'custom_map_attr.as_dict(): {read_sample.custom_map_attr.as_dict()}')
         logger.info(f'custom_map_attr.to_simple_dict(): {read_sample.custom_map_attr.to_simple_dict()}')
-        logger.info(f'read_sample_dict[\'custom_dynamic_map_attr\']: {read_sample_dict["custom_dynamic_map_attr"]}\n')
+        logger.info(f'dynamic_map_attr.to_simple_dict()[\'custom_dynamic_map_attr\']: {read_sample_dict["custom_dynamic_map_attr"]}\n')
 
         logger.info(f'custom_dynamic_map_attr: {read_sample.custom_dynamic_map_attr}')
         logger.info(f'custom_dynamic_map_attr.as_dict(): {read_sample.custom_dynamic_map_attr.as_dict()}')
         logger.info(f'custom_dynamic_map_attr.to_simple_dict(): {read_sample.custom_dynamic_map_attr.to_simple_dict()}')
-        logger.info(f'read_sample_dict[\'custom_dynamic_map_attr\']: {read_sample_dict["custom_dynamic_map_attr"]}\n')
+        logger.info(f'dynamic_map_attr.to_simple_dict()[\'custom_dynamic_map_attr\']: {read_sample_dict["custom_dynamic_map_attr"]}\n')
 
         self.assertEqual('gsi_partition_key', read_sample.gsi_partition_key)
         self.assertEqual('gsi_sort_key', read_sample.gsi_sort_key)
@@ -324,7 +317,7 @@ class DynamoDBDaoSample(unittest.TestCase):
         # Read
         read_sample = M.Sample.get(uuid_key)
         read_sample_extends = SampleExtends.get(uuid_key)
-        result_dict = model_to_dict(read_sample)
+        result_dict = read_sample.to_simple_dict()
         # then
 
         self.assertEqual(read_sample_extends.extra_field, 'extra_field')
