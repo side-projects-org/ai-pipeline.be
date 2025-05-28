@@ -4,7 +4,7 @@ from pynamodb.attributes import UnicodeAttribute, MapAttribute, ListAttribute, D
     NumberAttribute, UTCDateTimeAttribute, TTLAttribute
 
 from common.constants import BaseConfig
-from common.dynamodb.attributes.CustomAttribute import CDynamicMapAttribute
+
 
 prompt_dict_sample = {
     "key": "sample_key",

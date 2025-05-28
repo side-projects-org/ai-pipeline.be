@@ -1,3 +1,3 @@
-from .CustomAttribute import CDynamicMapAttribute
+from .MyAttribute import CDynamicMapAttribute
 
 __all__ = ['CDynamicMapAttribute']

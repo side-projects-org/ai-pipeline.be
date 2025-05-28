@@ -4,7 +4,7 @@ from pynamodb.attributes import UnicodeAttribute, MapAttribute, ListAttribute, D
     NumberAttribute, UTCDateTimeAttribute, TTLAttribute
 
 from common.constants import BaseConfig
-from common.dynamodb.attributes.CustomAttribute import CDynamicMapAttribute
+from common.dynamodb.attributes.MyAttribute import CDynamicMapAttribute
 
 
 class SampleGlobalIndex(GlobalSecondaryIndex):
@@ -59,6 +59,10 @@ class Sample(Model):
     list_attr_fix_object_type = ListAttribute(of=CustomMapAttribute, null=True)  # 다른 타입이 오면 에러
     list_attr_fix_primitive_type = ListAttribute(of=NumberAttribute, null=True)  # 다른 타입이 오면 에러
 
+    """
+    MapAttribute 는 사전에 정의된 속성만을 허용한다.
+    DynamicMapAttribute 는 사전에 정의된 속성 외에 임의의 속성을 허용한다. -> 조금이라도 변경될 가능성이 있다면, 이거 사용
+    """
     # map_attr = MapAttribute()                 # MapAttribute 는 바로 사용하는 것이 권장되지 않는다
     dynamic_map_attr = DynamicMapAttribute(null=True)
 
