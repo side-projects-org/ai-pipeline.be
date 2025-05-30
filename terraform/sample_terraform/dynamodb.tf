@@ -89,3 +89,55 @@ resource "aws_dynamodb_table" "prompt_dynamodb_table" {
     projection_type = "ALL"
   }
 }
+
+resource "aws_dynamodb_table" "prompt_dynamodb_table_v2" {
+  name         = "${var.projectName}_${var.stage}_prompt_v2"
+  billing_mode = "PAY_PER_REQUEST"
+  hash_key     = "pk"
+  range_key    = "sk"
+
+  attribute {
+    name = "pk"
+    type = "S"
+  }
+
+  attribute {
+    name = "sk"
+    type = "S"
+  }
+
+  # GSI 정의
+  attribute {
+    name = "item_type__prompt_name"
+    type = "S"
+  }
+
+  attribute {
+    name = "version"
+    type = "S"
+  }
+
+  attribute {
+    name = "prompt_name"
+    type = "S"
+  }
+
+  attribute {
+    name = "item_type__created_at"
+    type = "S"
+  }
+
+  global_secondary_index {
+    name            = "version-item_type__prompt_name-index"
+    hash_key        = "version"
+    range_key       = "item_type__prompt_name"
+    projection_type = "ALL"
+  }
+
+  global_secondary_index {
+    name            = "prompt_name-item_type__created_at-index"
+    hash_key        = "prompt_name"
+    range_key       = "item_type__created_at"
+    projection_type = "ALL"
+  }
+}
