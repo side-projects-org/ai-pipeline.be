@@ -7,6 +7,8 @@ from pynamodb.attributes import UnicodeAttribute, UTCDateTimeAttribute
 from pynamodb.expressions.condition import Condition
 from pynamodb.models import Model, _T, _KeyType
 
+from common import APIException, ErrorCode
+
 
 class ModelMetaclass(ABCMeta, type(Model)):
     pass
@@ -34,19 +36,24 @@ class MyModel(Model, metaclass=ModelMetaclass):
         consistent_read: bool = True,
         attributes_to_get: Optional[Sequence[Text]] = None,
         **kwargs: Any
-    ) -> _T:
+    ) -> Optional[_T]:
         """
         Generic get method. Subclasses wrap this for better IDE support.
         """
         hash_key = cls.build_pk(**kwargs)
         range_key = cls.build_sk(**kwargs)
 
-        return Model.get(
-            hash_key=hash_key,
-            range_key=range_key,
-            consistent_read=consistent_read,
-            attributes_to_get=attributes_to_get,
-        )
+        try:
+            return cls.get(
+                hash_key=hash_key,
+                range_key=range_key,
+                consistent_read=consistent_read,
+                attributes_to_get=attributes_to_get,
+            )
+        except cls.DoesNotExist:
+            return None
+        except Exception as e:
+            raise APIException(ErrorCode.DYNAMO_EXCEPTION, detail=f"Error getting item: {e}")
 
     def build_all_keys(self):
         if not self.pk:

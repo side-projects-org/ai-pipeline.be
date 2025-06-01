@@ -96,10 +96,6 @@ ITEM_TYPE = "prompt"  # 아이템 타입 상수
 
 
 class Prompt(MyModel):
-
-    pk = UnicodeAttribute(hash_key=True)  # 파티션 키
-    sk = UnicodeAttribute(range_key=True)  # 정렬 키
-
     item_type = UnicodeAttribute(null=False, default=ITEM_TYPE)  # 아이템 타입
 
     prompt_name = UnicodeAttribute(null=False)  # 프롬프트의 이름
@@ -146,7 +142,7 @@ class Prompt(MyModel):
             consistent_read: bool = True,
             attributes_to_get: Optional[Sequence[Text]] = None,
             **kwargs: Any
-    ) -> "Prompt":
+    ) -> Optional["Prompt"]:
 
         return cls._get_item(consistent_read=consistent_read, attributes_to_get=attributes_to_get,
                         prompt_name=prompt_name, version=version, **kwargs)

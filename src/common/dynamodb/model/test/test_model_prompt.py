@@ -1,5 +1,6 @@
 import time
 import unittest
+import uuid
 
 from common.dynamodb.model import M
 
@@ -31,7 +32,7 @@ class TestModelPrompt(unittest.TestCase):
         prompt.delete()
 
     def test_model_query(self):
-        prompt_name = 'test_prompt'
+        prompt_name = str(uuid.uuid4())
         prompt_dict = {
             'prompt_name': prompt_name,
             'version': '1.0',
