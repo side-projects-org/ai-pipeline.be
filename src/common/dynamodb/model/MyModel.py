@@ -1,7 +1,8 @@
+import uuid
 from abc import ABCMeta, abstractmethod
 from typing import Dict, Any, Optional, override
 
-from pynamodb.attributes import MapAttribute, DynamicMapAttribute, UnicodeAttribute
+from pynamodb.attributes import UnicodeAttribute
 from pynamodb.expressions.condition import Condition
 from pynamodb.models import Model
 
@@ -12,6 +13,8 @@ class MyModel(Model, metaclass=ModelMetaclass):
     pk = UnicodeAttribute(hash_key=True)
     sk = UnicodeAttribute(range_key=True)
 
+    key = UnicodeAttribute(null=False)
+
     GSIs = []
 
     def build_all_keys(self):
@@ -20,6 +23,9 @@ class MyModel(Model, metaclass=ModelMetaclass):
 
         if not self.sk:
             self.sk = self.build_sk()
+
+        # UUID
+        self.key = uuid.uuid4().__str__()
 
         for gsi in self.GSIs:
             pk_val = gsi.build_index_pk(**self.to_simple_dict())
