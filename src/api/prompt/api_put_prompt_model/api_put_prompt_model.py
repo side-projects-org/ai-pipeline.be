@@ -35,8 +35,8 @@ def validate_version_name(version: str, prompt_name: str):
     if version in PROHIBITED_VERSION_NAME:
         raise APIException(ErrorCode.INVALID_PARAMETER, param=f"Not Allowed Version Name: {version}")
     # DUPLICATE VERSION ERROR
-    items = list(M.Prompt.prompt_name__version__index.query(prompt_name, M.Prompt.version == version))
-    if items:
+    item = M.Prompt.get_item(prompt_name, version)
+    if item:
         raise APIException(ErrorCode.INVALID_PARAMETER,
                            param=f"Duplicated Version Name: {version} (for prompt: {prompt_name})")
 
@@ -74,19 +74,18 @@ def lambda_handler(event, context):
 
 
 def put_latest_model(prompt: M.Prompt):
-    items = list(M.Prompt.version__prompt_name__index.query(LATEST_VERSION, M.Prompt.prompt_name == prompt.prompt_name))
+    item = M.Prompt.get_item(prompt.prompt_name, LATEST_VERSION)
 
-    if items:
+    if item:
         # 기존 데이터 업데이트
-        latest_prompt = items[0]
         update_data = {
             "applied_version": prompt.version,
             "params": prompt.params,
             "updated_at": prompt.created_at,
         }
         for key, val in update_data.items():
-            setattr(latest_prompt, key, val)
-        latest_prompt.save()
+            setattr(item, key, val)
+        item.save()
     else:
         # 새로 생성
         latest_prompt = M.Prompt(
