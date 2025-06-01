@@ -1,4 +1,7 @@
+import traceback
+
 from common.ErrorCode import ErrorCode
+from common.Json import Json
 
 
 class APIException(Exception):
@@ -21,11 +24,16 @@ class APIException(Exception):
 
 
     def build_aws_response(self):
+        body = {
+            "message": self.message,
+            "traceback": traceback.format_exception_only(type(self), self)
+        }
+
         return {
             "statusCode": self.status_code,
             "headers": {
                 "Content-Type": "application/json",
             },
             "isBase64Encoded": False,
-            "body": self.message
+            "body": Json.dumps(body)
         }

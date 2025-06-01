@@ -1,4 +1,5 @@
 import logging
+import traceback
 
 from http import HTTPStatus
 
@@ -33,6 +34,7 @@ def _api_handler(func):
 
             response['body'] = Json.dumps(response_data)
         except APIException as e:
+            logger.error(traceback.format_exc())
             logger.error(e.server_log)
 
             deep_update(response, e.build_aws_response())
@@ -42,7 +44,8 @@ def _api_handler(func):
             deep_update(response, {
                 "statusCode": HTTPStatus.INTERNAL_SERVER_ERROR,
                 "body": Json.dumps({
-                    "error": str(e)
+                    "error": str(e),
+                    "traceback": traceback.format_exception_only(type(e), e)
                 })
             })
 
