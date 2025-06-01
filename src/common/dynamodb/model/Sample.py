@@ -80,10 +80,12 @@ class Sample(MyModel):
     DynamicMapAttribute 는 사전에 정의된 속성 외에 임의의 속성을 허용한다. -> 조금이라도 변경될 가능성이 있다면, 이거 사용
     """
 
-    def build_pk(self) -> str:
+    @classmethod
+    def build_pk(cls, **_) -> str:
         return "sample"
 
-    def build_sk(self) -> str:
+    @classmethod
+    def build_sk(cls, **_) -> str:
         return f"{uuid.uuid4().__str__()}"
 
     # map_attr = MapAttribute()                 # MapAttribute 는 바로 사용하는 것이 권장되지 않는다

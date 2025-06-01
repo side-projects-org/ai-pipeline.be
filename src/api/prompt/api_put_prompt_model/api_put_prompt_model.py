@@ -6,7 +6,7 @@ from common.awslambda.request_util import get_body
 
 from common.awslambda.response_handler import ResponseHandler, logger
 
-from common.dynamodb.model import Prompt, AIRequestParamsAttribute, AIMessageAttribute
+from common.dynamodb.model import M, Attr
 
 # prompt_name : 프롬프트별 식별값 : string (url 에서 허용되는지 검증)
 # version : 프롬프트별 버젼 (Default 는 UTC Current) : string (url 에서 허용되는지 검증)
@@ -35,7 +35,7 @@ def validate_version_name(version: str, prompt_name: str):
     if version in PROHIBITED_VERSION_NAME:
         raise APIException(ErrorCode.INVALID_PARAMETER, param=f"Not Allowed Version Name: {version}")
     # DUPLICATE VERSION ERROR
-    items = list(Prompt.prompt_name__version__index.query(prompt_name, Prompt.version == version))
+    items = list(M.Prompt.prompt_name__version__index.query(prompt_name, M.Prompt.version == version))
     if items:
         raise APIException(ErrorCode.INVALID_PARAMETER,
                            param=f"Duplicated Version Name: {version} (for prompt: {prompt_name})")
@@ -51,21 +51,18 @@ def lambda_handler(event, context):
     prompt_name = body["prompt_name"]
     validate_version_name(version, prompt_name)
 
-    key = uuid.uuid4().__str__()
     now = datetime.now(timezone.utc)
     # TODO messages 형태도 미리 검증하면 좋을 듯
-    prompt = Prompt(
-        key=key,
+    prompt = M.Prompt(
         prompt_name=prompt_name,
         version=version,
-        params=AIRequestParamsAttribute(
+        params=Attr.AIRequestParamsAttribute(
             model=body["model"],
-            messages=[AIMessageAttribute(**msg) for msg in body["messages"]],
+            messages=[Attr.AIMessageAttribute(**msg) for msg in body["messages"]],
             temperature=body["temperature"],
             max_completion_tokens=body["max_completion_tokens"],
             response_format="text",
         ),
-        created_at=now,
         updated_at=now,
     )
     prompt.save()
@@ -76,8 +73,8 @@ def lambda_handler(event, context):
     return data
 
 
-def put_latest_model(prompt: Prompt):
-    items = list(Prompt.version__prompt_name__index.query(LATEST_VERSION, Prompt.prompt_name == prompt.prompt_name))
+def put_latest_model(prompt: M.Prompt):
+    items = list(M.Prompt.version__prompt_name__index.query(LATEST_VERSION, M.Prompt.prompt_name == prompt.prompt_name))
 
     if items:
         # 기존 데이터 업데이트
@@ -92,8 +89,7 @@ def put_latest_model(prompt: Prompt):
         latest_prompt.save()
     else:
         # 새로 생성
-        latest_prompt = Prompt(
-            key=str(uuid.uuid4()),
+        latest_prompt = M.Prompt(
             prompt_name=prompt.prompt_name,
             version=LATEST_VERSION,
             applied_version=prompt.version,

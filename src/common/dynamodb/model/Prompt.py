@@ -1,7 +1,8 @@
-from pynamodb.indexes import GlobalSecondaryIndex, AllProjection
-from pynamodb.models import Model
+from typing import Type, Optional, Sequence, Text, Any
+
+from pynamodb.indexes import AllProjection
 from pynamodb.attributes import UnicodeAttribute, MapAttribute, ListAttribute, DynamicMapAttribute, BooleanAttribute, \
-    NumberAttribute, UTCDateTimeAttribute, TTLAttribute
+    NumberAttribute, UTCDateTimeAttribute
 
 from common.constants import BaseConfig
 from common.dynamodb.indexes import MyGlobalSecondaryIndex
@@ -31,6 +32,7 @@ prompt_dict_sample = {
     "best_model": "claude-3.5-sonnet",
 }
 
+
 class AIMessageAttribute(MapAttribute):
     # TODO 외부로 뺄 것
     role = UnicodeAttribute(null=False)  # user, assistant
@@ -46,7 +48,7 @@ class AIRequestParamsAttribute(DynamicMapAttribute):
     response_format = UnicodeAttribute(null=True)  # 응답 형식
 
 
-class Version_PromptName_Index(MyGlobalSecondaryIndex):
+class Version_ItemTypePromptName_Index(MyGlobalSecondaryIndex):
     def get_index_pk_name(self) -> str:
         return "version"
 
@@ -90,18 +92,15 @@ class PromptName_ItemTypeCreatedAt_Index(MyGlobalSecondaryIndex):
     item_type__created_at = UnicodeAttribute(range_key=True)
 
 
+ITEM_TYPE = "prompt"  # 아이템 타입 상수
+
 
 class Prompt(MyModel):
-    def build_pk(self) -> str:
-        return f"{self.prompt_name}"
-
-    def build_sk(self) -> str:
-        return f"{self.item_type}#version@{self.version}"
 
     pk = UnicodeAttribute(hash_key=True)  # 파티션 키
     sk = UnicodeAttribute(range_key=True)  # 정렬 키
 
-    item_type = UnicodeAttribute(null=False, default="PROMPT")  # 아이템 타입
+    item_type = UnicodeAttribute(null=False, default=ITEM_TYPE)  # 아이템 타입
 
     prompt_name = UnicodeAttribute(null=False)  # 프롬프트의 이름
     version = UnicodeAttribute(null=False)  # 버전
@@ -109,22 +108,45 @@ class Prompt(MyModel):
     params = AIRequestParamsAttribute(null=True)
 
     applied_version = UnicodeAttribute(null=True)  # 적용된 버전
-    created_at = UTCDateTimeAttribute(null=True)  # 생성일
+
     updated_at = UTCDateTimeAttribute(null=True)  # 생성일
 
     best_ai = UnicodeAttribute(null=True)  # 가장 좋은 AI
     best_model = UnicodeAttribute(null=True)  # 가장 좋은 모델
 
+    # gsi keys
+    item_type__created_at = UnicodeAttribute(null=False)  # 아이템 타입과 생성일을 합친 키
+    item_type__prompt_name = UnicodeAttribute(null=False)  # 아이템 타입과 프롬프트 이름을 합친 키
+
     # gsi
     pk_prompt_name_sk_item_type__created_at_index = PromptName_ItemTypeCreatedAt_Index()
-    version__prompt_name__index = Version_PromptName_Index()
+    pk_version_sk_item_type__prompt_name__index = Version_ItemTypePromptName_Index()
 
     GSIs = [
         pk_prompt_name_sk_item_type__created_at_index,
-        version__prompt_name__index
+        pk_version_sk_item_type__prompt_name__index
     ]
 
     class Meta:
-        table_name = f"{BaseConfig.PROJECT_NAME}_{BaseConfig.STAGE_NAME}_prompt"
+        table_name = f"{BaseConfig.PROJECT_NAME}_{BaseConfig.STAGE_NAME}_prompt_v2"
         region = BaseConfig.AWS_REGION
 
+    @classmethod
+    def build_pk(cls, prompt_name: str, **_) -> str:
+        return f"{prompt_name}"
+
+    @classmethod
+    def build_sk(cls, version: str, **_) -> str:
+        return f"{ITEM_TYPE}#version@{version}"
+
+
+    @classmethod
+    def get_item(
+            cls, prompt_name: str, version: str,
+            consistent_read: bool = True,
+            attributes_to_get: Optional[Sequence[Text]] = None,
+            **kwargs: Any
+    ) -> "Prompt":
+
+        return cls._get_item(consistent_read=consistent_read, attributes_to_get=attributes_to_get,
+                        prompt_name=prompt_name, version=version, **kwargs)
