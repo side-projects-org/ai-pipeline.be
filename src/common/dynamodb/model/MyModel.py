@@ -1,11 +1,13 @@
 import uuid
 from abc import ABCMeta, abstractmethod
 from datetime import datetime, timezone
-from typing import Dict, Any, Optional, override, Type, Sequence, Text
+from typing import Dict, Any, Optional, override, Type, Sequence, Text, TypeVar
 
 from pynamodb.attributes import UnicodeAttribute, UTCDateTimeAttribute
 from pynamodb.expressions.condition import Condition
-from pynamodb.models import Model, _T, _KeyType
+from pynamodb.models import Model
+
+_T = TypeVar('_T', bound='Model')
 
 from common import APIException, ErrorCode
 

@@ -80,8 +80,6 @@ class PromptName_ItemTypeCreatedAt_Index(MyGlobalSecondaryIndex):
         return f"{prompt_name}"
 
     def build_index_sk(self, item_type, created_at=None, **kwargs) -> str:
-        # TODO created_at 이 인스턴스 생성 시점인지, 디비에 저장된 시점인지에 따라 문제발생 가능성 있음
-        # UTCDateTimeAttribute 를 사용하고 있으므로 저장했을 떄 어떻게 생겼을지 모름
         return f"{item_type}#created_at@{created_at}"
 
     class Meta:

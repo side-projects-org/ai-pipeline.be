@@ -1,6 +1,6 @@
 from common import APIException, ErrorCode
 from common.awslambda.request_util import get_query_parameter
-from common.dynamodb.model import Prompt
+from common.dynamodb.model import M
 from common.awslambda.response_handler import ResponseHandler
 
 
@@ -24,7 +24,7 @@ def get_target_prompts(prompt_name: str, version: str):
         if version is None:
             version = "LATEST"
 
-        return Prompt \
+        return M.Prompt \
         .pk_version_sk_item_type__prompt_name__index \
         .query(
             hash_key = version
@@ -32,7 +32,7 @@ def get_target_prompts(prompt_name: str, version: str):
 
     # prompt_name 가 명시된 경우
     else:
-        return Prompt \
+        return M.Prompt \
         .pk_prompt_name_sk_item_type__created_at_index \
         .query(
             hash_key = prompt_name

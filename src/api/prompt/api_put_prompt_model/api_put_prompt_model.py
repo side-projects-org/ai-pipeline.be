@@ -74,6 +74,7 @@ def lambda_handler(event, context):
 
 
 def put_latest_model(prompt: M.Prompt):
+    global LATEST_VERSION
     item = M.Prompt.get_item(prompt.prompt_name, LATEST_VERSION)
 
     if item:

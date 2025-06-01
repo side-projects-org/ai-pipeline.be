@@ -64,7 +64,7 @@ class DynamoDBDaoSample(unittest.TestCase):
         self.assertTrue(now.__eq__(read_sample.utc_datetime_attr))
 
         logger.info(f'read_sample.ttl_attr: {read_sample.ttl_attr}')
-        self.assertTrue(now.timestamp(), read_sample.ttl_attr)   # ttl_attr 은 timestamp 로 비교해야한다.
+        self.assertTrue(int(now.timestamp()) == int(read_sample.ttl_attr.timestamp()))   # ttl_attr 은 timestamp 로 비교해야한다.
 
         self.assertEqual([1, 'a', True], read_sample.list_attr)
 
