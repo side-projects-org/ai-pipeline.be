@@ -7,8 +7,5 @@ class M:
     Sample = Sample
     Prompt = Prompt
 
-class Attr:
-    AIRequestParamsAttribute = AIRequestParamsAttribute
-    AIMessageAttribute = AIMessageAttribute
 
-__all__ = ['M', 'MyModel', 'Attr']
+__all__ = ['M', 'MyModel']

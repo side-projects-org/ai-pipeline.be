@@ -5,6 +5,7 @@ from pynamodb.attributes import UnicodeAttribute, MapAttribute, ListAttribute, D
     NumberAttribute, UTCDateTimeAttribute
 
 from common.constants import BaseConfig, ModelType
+from common.dynamodb.attributes import Attr
 from common.dynamodb.indexes import MyGlobalSecondaryIndex
 from common.dynamodb.model import MyModel
 
@@ -31,21 +32,6 @@ prompt_dict_sample = {
     "best_ai": "bedrock",
     "best_model": "claude-3.5-sonnet",
 }
-
-
-class AIMessageAttribute(MapAttribute):
-    # TODO 외부로 뺄 것
-    role = UnicodeAttribute(null=False)  # user, assistant
-    content = UnicodeAttribute(null=False)  # 메시지 내용
-
-
-class AIRequestParamsAttribute(DynamicMapAttribute):
-    model = UnicodeAttribute(null=True)  # 모델 이름
-    messages = ListAttribute(of=AIMessageAttribute, null=True)  # 메시지 리스트
-    temperature = NumberAttribute(null=True)  # 온도
-    max_completion_tokens = NumberAttribute(null=True)  # 최대 토큰 수
-    max_tokens = NumberAttribute(null=True)  # 최대 토큰 수
-    response_format = UnicodeAttribute(null=True)  # 응답 형식
 
 
 class Version_ItemTypePromptName_Index(MyGlobalSecondaryIndex):
@@ -98,7 +84,7 @@ class Prompt(MyModel):
     prompt_name = UnicodeAttribute(null=False)  # 프롬프트의 이름
     version = UnicodeAttribute(null=False)  # 버전
 
-    params = AIRequestParamsAttribute(null=True)
+    params = Attr.AIRequestParamsAttribute(null=True)
 
     applied_version = UnicodeAttribute(null=True)  # 적용된 버전
 
