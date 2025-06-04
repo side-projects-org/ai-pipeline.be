@@ -3,7 +3,6 @@ from http import HTTPStatus
 from pynamodb.exceptions import DoesNotExist
 
 from common import APIException, ErrorCode
-from common.pynamo_util import model_to_dict
 from common.dynamodb.model import M
 
 from common.awslambda.response_handler import ResponseHandler
@@ -24,4 +23,4 @@ def lambda_handler(event, context):
     except DoesNotExist as e:
         raise APIException(ErrorCode.DYNAMO_ITEM_NOT_FOUND, key=key)
 
-    return model_to_dict(sample)
+    return sample.to_simple_dict()

@@ -1,32 +1,39 @@
 from common import APIException, ErrorCode
-from common.pynamo_util import model_to_dict
-from common.dynamodb.model import Prompt
-
+from common.awslambda.request_util import get_query_parameter
+from common.dynamodb.model import M
 from common.awslambda.response_handler import ResponseHandler
 
 
 @ResponseHandler.api
 def lambda_handler(event, context):
-    # QUERY PARAMETER 에서 key 를 꺼내온다.
-    try:
-        requestPromptName = event.get("queryStringParameters", {}).get("prompt_name", "")
-        requestVersion = event.get("queryStringParameters", {}).get("version", "")
+    prompt_name = get_query_parameter(event, "prompt_name")
+    version = get_query_parameter(event, "version")
 
-        if requestPromptName == "":  # 이름 명시되지 않은 경우
-            if requestVersion == "": # 버전 없다면 기본값 LATEST로 검색
-                requestVersion="LATEST"
-            target = Prompt.version__prompt_name__index.query(requestVersion)
-        else:  # 이름 명시된 경우
-            if requestVersion == "": # 버전 없다면 해당 프롬프트 이름의 모든 버전 검색
-                target = Prompt.prompt_name__version__index.query(requestPromptName)
-            else: # 버전 있다면 해당 버전으로 검색
-                target = Prompt.prompt_name__version__index.query(requestPromptName, Prompt.version == requestVersion)
-        print("name", requestPromptName)
-        print("ver", requestVersion)
-        # TODO message도 dict 꼴로 전달해야 할지 확인
+    try:
+        target = get_target_prompts(prompt_name, version)
         result = [prompt.to_simple_dict() for prompt in target]
         return result
-
     except Exception as e:
-        raise APIException(ErrorCode.INTERNAL_ERROR,detail=str(e))
+        raise APIException(ErrorCode.INTERNAL_ERROR, detail=str(e))
 
+
+def get_target_prompts(prompt_name: str, version: str):
+    # version 기준 검색
+    if prompt_name is None:
+
+        if version is None:
+            version = "LATEST"
+
+        return M.Prompt \
+        .pk_version_sk_item_type__prompt_name__index \
+        .query(
+            hash_key = version
+        )
+
+    # prompt_name 가 명시된 경우
+    else:
+        return M.Prompt \
+        .pk_prompt_name_sk_item_type__created_at_index \
+        .query(
+            hash_key = prompt_name
+        )

@@ -18,7 +18,7 @@ class Test(TestCase):
     def test_get_env_with_file(self):
         # this test case depends on the file project_name.txt
         # so, it will fail if the file changes
-        actual = get_env('PROJECT_NAME', '../../../project_env/sample/project_name.txt')
+        actual = get_env('PROJECT_NAME', '../../project_env/sample/project_name.txt')
 
         self.assertEqual(actual, 'project_name')
 

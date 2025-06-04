@@ -26,6 +26,11 @@ class ErrorCode(Enum):
         "DynamoDB에서 항목을 찾을 수 없습니다 [search key: {key}]",
         "DynamoDB 항목 없음: [search key: {key}]"
     )
+    DYNAMO_EXCEPTION = (
+        500,
+        "DynamoDB 작업 중 오류가 발생했습니다: {detail}",
+        "DynamoDB 작업 오류: {detail}"
+    )
 
     def __init__(self, status_code: int, client_template: str, server_template: str):
         self.status_code = status_code
