@@ -9,9 +9,21 @@ from common.dynamodb.attributes import Attr
 from common.dynamodb.indexes import MyGlobalSecondaryIndex
 from common.dynamodb.model import MyModel
 
-prompt_dict_sample = {
-    "key": "sample_key",
+"""
+Prompt 모델 예시
+{
+    "pk": "sample_prompt_name",
+    "sk": "prompt#version@1.0.0",
     "prompt_name": "sample_prompt_name", # 프롬프트의 이름
+    "item_type": "prompt",
+    "version": "1.0.0",  # 프롬프트 버전
+    "created_at": "2023-10-01T12:00:00Z",
+    "item_type__created_at": "prompt#created_at@2023-10-01T12:00:00Z",  # 아이템 타입과 생성일을 합친 키
+    "item_type__prompt_name": "prompt#sample_prompt_name",  # 아이템 타입과 프롬프트 이름을 합친 키
+    "applied_version": "1.0.0",  # 적용된 버전
+    
+    "key": "EW256F4-3D2A-4B1C-8A2B-1C2D3E4F5G6H",  # UUID 형식의 키
+    
     "params": {
         "messages": [
             {
@@ -29,9 +41,11 @@ prompt_dict_sample = {
         "temperature": 0.7,
         "stream": False,
     },
-    "best_ai": "bedrock",
-    "best_model": "claude-3.5-sonnet",
+    
+    "best_ai": "bedrock",               # 아직 의미없는 필드
+    "best_model": "claude-3.5-sonnet",  # 아직 의미없는 필드
 }
+"""
 
 
 class Version_ItemTypePromptName_Index(MyGlobalSecondaryIndex):
@@ -79,6 +93,10 @@ class PromptName_ItemTypeCreatedAt_Index(MyGlobalSecondaryIndex):
 
 
 class Prompt(MyModel):
+    class Meta:
+        table_name = f"{BaseConfig.PROJECT_NAME}_{BaseConfig.STAGE_NAME}_prompt_v2"
+        region = BaseConfig.AWS_REGION
+
     item_type = UnicodeAttribute(null=False, default=ModelType.Prompt.value)  # 아이템 타입
 
     prompt_name = UnicodeAttribute(null=False)  # 프롬프트의 이름
@@ -106,9 +124,6 @@ class Prompt(MyModel):
         pk_version_sk_item_type__prompt_name__index
     ]
 
-    class Meta:
-        table_name = f"{BaseConfig.PROJECT_NAME}_{BaseConfig.STAGE_NAME}_prompt_v2"
-        region = BaseConfig.AWS_REGION
 
     @classmethod
     def build_pk(cls, prompt_name: str, **_) -> str:
