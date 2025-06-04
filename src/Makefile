@@ -206,9 +206,14 @@ api:
 	template="lambda_handler_template.py"; \
 	\
 	mkdir -p "$$path"; \
+	mkdir -p "$$path/test"; \
+	[ -f "$$path/../__init__.py" ] || touch "$$path/../__init__.py"; \
+	[ -f "$$path/test/__init__.py" ] || touch "$$path/test/__init__.py"; \
+	[ -f "$$path/test/test_$(name).py" ] || touch "$$path/test/test_$(name).py"; \
 	if [ ! -f "$$file" ]; then \
 		cp $$template "$$file"; \
 		echo "✅ Created: $$file with Lambda handler template"; \
+		[ -f "$$path/__init__.py" ] || touch "$$path/__init__.py"; \
 	else \
 		echo "⚠️ File already exists: $$file (skipped)"; \
 	fi
