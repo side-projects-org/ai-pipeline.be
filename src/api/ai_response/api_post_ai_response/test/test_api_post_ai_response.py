@@ -1,3 +1,4 @@
+import unittest
 from unittest import TestCase
 
 from api.ai_response.api_post_ai_response.api_post_ai_response import validate_request_body, save_ai_response
@@ -103,3 +104,7 @@ class Test(TestCase):
         finally:
             if ai_response is not None:
                 ai_response.delete()
+
+# Run tests
+if __name__ == "__main__":
+    unittest.main()
