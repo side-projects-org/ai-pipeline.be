@@ -1,6 +1,6 @@
 import os
 import logging
-
+from enum import Enum
 
 logger = logging.getLogger("common.constants")
 
@@ -29,3 +29,9 @@ class BaseConfig:
     PROJECT_NAME = get_env('PROJECT_NAME', '../../project_env/live/project_name.txt')
     STAGE_NAME = get_env('STAGE_NAME', '../../project_env/live/stage_name.txt')
     OPEN_AI_KEY = get_env('OPEN_AI_KEY', '../../project_env/live/open_ai_key.txt')
+
+
+class ModelType(Enum):
+    Prompt = "prompt"
+    AIResponse = "ai_response"
+

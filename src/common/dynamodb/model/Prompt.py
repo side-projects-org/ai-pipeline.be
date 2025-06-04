@@ -4,7 +4,7 @@ from pynamodb.indexes import AllProjection
 from pynamodb.attributes import UnicodeAttribute, MapAttribute, ListAttribute, DynamicMapAttribute, BooleanAttribute, \
     NumberAttribute, UTCDateTimeAttribute
 
-from common.constants import BaseConfig
+from common.constants import BaseConfig, ModelType
 from common.dynamodb.indexes import MyGlobalSecondaryIndex
 from common.dynamodb.model import MyModel
 
@@ -90,11 +90,10 @@ class PromptName_ItemTypeCreatedAt_Index(MyGlobalSecondaryIndex):
     item_type__created_at = UnicodeAttribute(range_key=True)
 
 
-ITEM_TYPE = "prompt"  # 아이템 타입 상수
 
 
 class Prompt(MyModel):
-    item_type = UnicodeAttribute(null=False, default=ITEM_TYPE)  # 아이템 타입
+    item_type = UnicodeAttribute(null=False, default=ModelType.Prompt.value)  # 아이템 타입
 
     prompt_name = UnicodeAttribute(null=False)  # 프롬프트의 이름
     version = UnicodeAttribute(null=False)  # 버전
@@ -130,8 +129,8 @@ class Prompt(MyModel):
         return f"{prompt_name}"
 
     @classmethod
-    def build_sk(cls, version: str, **_) -> str:
-        return f"{ITEM_TYPE}#version@{version}"
+    def build_sk(cls, item_type: str, version: str, **_) -> str:
+        return f"{item_type}#version@{version}"
 
 
     @classmethod
