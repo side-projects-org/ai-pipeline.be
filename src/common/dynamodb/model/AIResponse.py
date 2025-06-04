@@ -2,7 +2,7 @@ from typing import Type, Optional, Sequence, Text, Any
 
 from pynamodb.attributes import UnicodeAttribute, MapAttribute, DynamicMapAttribute, NumberAttribute
 
-from common.constants import BaseConfig
+from common.constants import BaseConfig, ModelType
 from common.dynamodb.attributes import Attr
 
 from common.dynamodb.model import MyModel
@@ -67,7 +67,7 @@ class AIResponse(MyModel):
         region = BaseConfig.AWS_REGION
 
 
-    item_type = UnicodeAttribute(default="AIResponse", null=False)
+    item_type = UnicodeAttribute(null=False, default=ModelType.AIResponse.value)
     prompt_name = UnicodeAttribute(null=False)
     version = UnicodeAttribute(null=False)
 
@@ -76,12 +76,12 @@ class AIResponse(MyModel):
     response = Attr.AIResponseAttribute(null=True)
 
     @classmethod
-    def build_pk(cls, **kwargs) -> str:
-        pass
+    def build_pk(cls, prompt_name: str, **kwargs) -> str:
+        return f"{prompt_name}"
 
     @classmethod
-    def build_sk(cls, **kwargs) -> str:
-        pass
+    def build_sk(cls, item_type: str, version: str, key: str, **kwargs) -> str:
+        return f"{item_type}#{version}#{key}"
 
     @classmethod
     def get_item(
