@@ -130,8 +130,13 @@ class Prompt(MyModel):
         return f"{prompt_name}"
 
     @classmethod
-    def build_sk(cls, item_type: str, version: str, **_) -> str:
-        return f"{item_type}#version@{version}"
+    def build_sk(cls, version: str,  item_type: str=ModelType.Prompt.value, **_) -> str:
+        sk_value = f"{item_type}#version@"
+
+        if version:
+            sk_value += version
+
+        return sk_value
 
 
     @classmethod
