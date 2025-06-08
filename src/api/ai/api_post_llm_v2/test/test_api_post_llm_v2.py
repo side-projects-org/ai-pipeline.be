@@ -17,7 +17,7 @@ class Test(TestCase):
         }
         context = {}
 
-        from api.ai.api_post_llm_v2.api_post_request_llm_v2 import lambda_handler
+        from api.ai.api_post_llm_v2.api_post_llm_v2 import lambda_handler
         response = lambda_handler(event, context)
 
         print(response)
