@@ -34,7 +34,7 @@ def get_query_parameter(event, key: str, default=None):
     return default
 
 
-def get_body(event):
+def get_body(event) -> dict:
     """
     Extracts the body from the event object.
 
