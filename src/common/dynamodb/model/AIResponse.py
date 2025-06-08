@@ -80,7 +80,7 @@ class AIResponse(MyModel):
         return f"{prompt_name}"
 
     @classmethod
-    def build_sk(cls, item_type: str, version: str, key: str, **kwargs) -> str:
+    def build_sk(cls, version: str="", key: str="", item_type: str=ModelType.AIResponse.value, **kwargs) -> str:
         return f"{item_type}#{version}#{key}"
 
     @classmethod

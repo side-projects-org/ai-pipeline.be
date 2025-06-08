@@ -25,15 +25,11 @@ def get_target_prompts(prompt_name: str, version: str):
             version = "LATEST"
 
         return M.Prompt \
-        .pk_version_sk_item_type__prompt_name__index \
-        .query(
-            hash_key = version
-        )
+            .pk_version_sk_item_type__prompt_name__index \
+            .query(hash_key=version)
 
     # prompt_name 가 명시된 경우
     else:
         return M.Prompt \
-        .pk_prompt_name_sk_item_type__created_at_index \
-        .query(
-            hash_key = prompt_name
-        )
+            .pk_prompt_name_sk_item_type__created_at_index \
+            .query(hash_key=prompt_name)
