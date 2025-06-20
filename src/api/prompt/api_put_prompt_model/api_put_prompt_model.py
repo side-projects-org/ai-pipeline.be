@@ -63,6 +63,8 @@ def lambda_handler(event, context):
             max_completion_tokens=body["max_completion_tokens"],
             response_format="text",
         ),
+        best_ai=body.get("best_ai", None),
+        best_model=body.get("best_model", None),
         updated_at=now,
     )
     prompt.save()
