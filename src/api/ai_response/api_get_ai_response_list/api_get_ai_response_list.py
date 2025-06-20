@@ -40,13 +40,13 @@ def lambda_handler(event, context):
     if prompt is None:
         raise APIException(ErrorCode.INVALID_PARAMETER, param="prompt_name, version")
 
-    # Prompt 에 해당하는 AIResponse 를 조회한다.
-    sk = M.AIResponse.build_sk()
+    # Prompt 에 해당하는 AiResponse 를 조회한다.
+    sk = M.AiResponse.build_sk()
     print(sk)
 
-    ai_responses = M.AIResponse.query(
-        hash_key=M.AIResponse.build_pk(prompt.prompt_name),
-        range_key_condition=M.AIResponse.sk.startswith(M.AIResponse.build_sk())
+    ai_responses = M.AiResponse.query(
+        hash_key=M.AiResponse.build_pk(prompt.prompt_name),
+        range_key_condition=M.AiResponse.sk.startswith(M.AiResponse.build_sk())
     )
 
 

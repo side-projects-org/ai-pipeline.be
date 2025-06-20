@@ -1,16 +1,16 @@
 from .MyAttribute import CDynamicMapAttribute
 
-from .AIMessageAttribute import AIMessageAttribute
-from .AIRequestParamsAttribute import AIRequestParamsAttribute
+from .AiMessageAttribute import AiMessageAttribute
+from .AiRequestParamsAttribute import AiRequestParamsAttribute
 from .AnswerAttribute import AnswerAttribute, ChoiceAttribute, AnswerUsageAttribute
 
 class Attr:
-    AIRequestParamsAttribute = AIRequestParamsAttribute
-    AIMessageAttribute = AIMessageAttribute
+    AiRequestParamsAttribute = AiRequestParamsAttribute
+    AiMessageAttribute = AiMessageAttribute
     AnswerAttribute = AnswerAttribute
     ChoiceAttribute = ChoiceAttribute
     AnswerUsageAttribute = AnswerUsageAttribute
 
 __all__ = ['CDynamicMapAttribute', 'Attr',
-           'AIMessageAttribute', 'AIRequestParamsAttribute',
+           'AiMessageAttribute', 'AiRequestParamsAttribute',
            'AnswerAttribute', 'ChoiceAttribute', 'AnswerUsageAttribute']

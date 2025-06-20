@@ -35,5 +35,5 @@ def lambda_handler(event, context):
             'temperature': body['temperature'],
             'max_tokens': body['max_completion_tokens']
         },
-        'response': data
+        'answer': data
     }

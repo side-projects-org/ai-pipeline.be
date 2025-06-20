@@ -56,9 +56,9 @@ def lambda_handler(event, context):
     prompt = M.Prompt(
         prompt_name=prompt_name,
         version=version,
-        params=Attr.AIRequestParamsAttribute(
+        params=Attr.AiRequestParamsAttribute(
             model=body["model"],
-            messages=[Attr.AIMessageAttribute(**msg) for msg in body["messages"]],
+            messages=[Attr.AiMessageAttribute(**msg) for msg in body["messages"]],
             temperature=body["temperature"],
             max_completion_tokens=body["max_completion_tokens"],
             response_format="text",

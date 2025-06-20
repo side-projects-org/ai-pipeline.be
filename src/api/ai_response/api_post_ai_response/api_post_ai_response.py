@@ -37,7 +37,7 @@ def lambda_handler(event, context):
     if prompt is None:
         raise APIException(ErrorCode.INVALID_PARAMETER, param="prompt_name, version")
 
-    # response 와 prompt 정보를 이용하여 AIResponse 를 저장한다.
+    # response 와 prompt 정보를 이용하여 AiResponse 를 저장한다.
     ai_response = save_ai_response(body, prompt)
 
     return ai_response.to_simple_dict()
@@ -46,7 +46,7 @@ def lambda_handler(event, context):
 def save_ai_response(body:dict, prompt: M.Prompt):
     attr_response_from_ai = Attr.AnswerAttribute(**body['answer'])
 
-    ai_response = M.AIResponse(
+    ai_response = M.AiResponse(
         prompt_name=prompt.prompt_name,
         version=prompt.version,
         params=prompt.params,

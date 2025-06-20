@@ -33,5 +33,5 @@ class BaseConfig:
 
 class ModelType(Enum):
     Prompt = "prompt"
-    AIResponse = "ai_response"
+    AiResponse = "ai_response"
 

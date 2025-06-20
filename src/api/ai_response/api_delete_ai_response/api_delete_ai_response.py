@@ -27,7 +27,7 @@ def lambda_handler(event, context):
 
     validate_request_body(body)
 
-    ai_response = M.AIResponse.get_item(
+    ai_response = M.AiResponse.get_item(
         prompt_name=body['prompt_name'],
         version=body['version'],
         key=body['key']

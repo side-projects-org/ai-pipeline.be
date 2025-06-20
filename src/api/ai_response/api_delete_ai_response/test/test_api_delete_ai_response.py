@@ -4,7 +4,7 @@ from unittest import TestCase
 from api.ai_response.api_delete_ai_response.api_delete_ai_response import validate_request_body, lambda_handler
 from common import APIException, ErrorCode
 from common.Json import Json
-from common.dynamodb.attributes import Attr, AIMessageAttribute
+from common.dynamodb.attributes import Attr, AiMessageAttribute
 from common.dynamodb.model import M
 
 
@@ -38,19 +38,19 @@ class Test(TestCase):
 
     def test_lambda_handler(self):
         # given
-        ai_response = M.AIResponse(
+        ai_response = M.AiResponse(
             prompt_name='test_prompt',
             version='1.0',
             key='EW256F4-3D2A-4B1C-8A2B-1C2D3E4F5G6H',
-            params=Attr.AIRequestParamsAttribute(
+            params=Attr.AiRequestParamsAttribute(
                 messages=[
-                    AIMessageAttribute(role="assistant", content="I'm fine, thank you!")
+                    AiMessageAttribute(role="assistant", content="I'm fine, thank you!")
                 ],
                 model="gpt-3.5-turbo",
                 temperature=0.7,
                 max_completion_tokens=150
             ),
-            response=Attr.AnswerAttribute(
+            answer=Attr.AnswerAttribute(
                 id="response_id_123",
                 object="chat.completion",
                 created=1696156800,
@@ -58,7 +58,7 @@ class Test(TestCase):
                 choices=[
                     Attr.ChoiceAttribute(
                         index=0,
-                        message=Attr.AIMessageAttribute(
+                        message=Attr.AiMessageAttribute(
                             role="assistant",
                             content="I'm fine, thank you!"
                         ),
@@ -85,7 +85,7 @@ class Test(TestCase):
         response = lambda_handler(event, None)
         res_body = Json.loads(response['body'])
 
-        deleted = M.AIResponse.get_item(
+        deleted = M.AiResponse.get_item(
             prompt_name=ai_response.prompt_name,
             version=ai_response.version,
             key=ai_response.key

@@ -9,11 +9,11 @@ from common.dynamodb.model import MyModel
 from common.dynamodb.model.MyModel import _T
 
 """
-AIResponse 모델 예시
+AiResponse 모델 예시
 {
-    "pk": "AIResponse#sample_key",
-    "sk": "AIResponse#sample_prompt_name",
-    "item_type": "AIResponse",
+    "pk": "AiResponse#sample_key",
+    "sk": "AiResponse#sample_prompt_name",
+    "item_type": "AiResponse",
     
     "key": "sample_key",
     "prompt_name": "sample_prompt_name", # 프롬프트의 이름
@@ -61,17 +61,17 @@ AIResponse 모델 예시
 """
 
 
-class AIResponse(MyModel):
+class AiResponse(MyModel):
     class Meta:
         table_name = f"{BaseConfig.PROJECT_NAME}_{BaseConfig.STAGE_NAME}_prompt_v2"
         region = BaseConfig.AWS_REGION
 
 
-    item_type = UnicodeAttribute(null=False, default=ModelType.AIResponse.value)
+    item_type = UnicodeAttribute(null=False, default=ModelType.AiResponse.value)
     prompt_name = UnicodeAttribute(null=False)
     version = UnicodeAttribute(null=False)
 
-    params = Attr.AIRequestParamsAttribute(null=True)
+    params = Attr.AiRequestParamsAttribute(null=True)
 
     answer = Attr.AnswerAttribute(null=True)
 
@@ -80,7 +80,7 @@ class AIResponse(MyModel):
         return f"{prompt_name}"
 
     @classmethod
-    def build_sk(cls, version: str=None, key: str=None, item_type: str=ModelType.AIResponse.value, **kwargs) -> str:
+    def build_sk(cls, version: str=None, key: str=None, item_type: str=ModelType.AiResponse.value, **kwargs) -> str:
         sk_value = f"{item_type}#"
 
         if version:
@@ -100,7 +100,7 @@ class AIResponse(MyModel):
         consistent_read: bool = True,
         attributes_to_get: Optional[Sequence[Text]] = None,
         **kwargs: Any
-    ) -> Optional["AIResponse"]:
+    ) -> Optional["AiResponse"]:
         return cls._get_item(
             consistent_read=consistent_read,
             attributes_to_get=attributes_to_get,

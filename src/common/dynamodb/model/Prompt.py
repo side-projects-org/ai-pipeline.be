@@ -102,7 +102,7 @@ class Prompt(MyModel):
     prompt_name = UnicodeAttribute(null=False)  # 프롬프트의 이름
     version = UnicodeAttribute(null=False)  # 버전
 
-    params = Attr.AIRequestParamsAttribute(null=True)
+    params = Attr.AiRequestParamsAttribute(null=True)
 
     applied_version = UnicodeAttribute(null=True)  # 적용된 버전
 

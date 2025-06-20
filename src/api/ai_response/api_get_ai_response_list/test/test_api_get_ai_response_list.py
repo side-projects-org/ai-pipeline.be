@@ -4,7 +4,7 @@ from unittest import TestCase
 from api.ai_response.api_get_ai_response_list.api_get_ai_response_list import validate_request_params, lambda_handler
 from common import APIException, ErrorCode
 from common.Json import Json
-from common.dynamodb.attributes import Attr, AIMessageAttribute
+from common.dynamodb.attributes import Attr, AiMessageAttribute
 from common.dynamodb.model import M
 
 
@@ -17,9 +17,9 @@ class Test(TestCase):
         if prompt:
             prompt.delete()
 
-        ai_responses = M.AIResponse.query(
+        ai_responses = M.AiResponse.query(
             hash_key='test_prompt',
-            range_key_condition=M.AIResponse.sk.startswith(M.AIResponse.build_sk())
+            range_key_condition=M.AiResponse.sk.startswith(M.AiResponse.build_sk())
         )
 
         for ai_response in ai_responses:
@@ -52,9 +52,9 @@ class Test(TestCase):
         prompt = M.Prompt(
             prompt_name='test_prompt',
             version='1.0',
-            params=Attr.AIRequestParamsAttribute(
+            params=Attr.AiRequestParamsAttribute(
                 messages=[
-                    AIMessageAttribute(role="user", content="Hello, how are you?")
+                    AiMessageAttribute(role="user", content="Hello, how are you?")
                 ],
                 max_tokens=100,
                 max_completions_tokens=100,
@@ -79,7 +79,7 @@ class Test(TestCase):
                 choices=[
                     Attr.ChoiceAttribute(
                         index=0,
-                        message=AIMessageAttribute(role='assistant', content=f'Response {x}'),
+                        message=AiMessageAttribute(role='assistant', content=f'Response {x}'),
                         finish_reason='stop'
                     )
                 ],
@@ -87,11 +87,11 @@ class Test(TestCase):
         ]
 
         for ai_response in ai_responses:
-            ai_response_item = M.AIResponse(
+            ai_response_item = M.AiResponse(
                 prompt_name=prompt.prompt_name,
                 version=prompt.version,
                 params=prompt.params,
-                response=ai_response
+                answer=ai_response
             )
             ai_response_item.save()
 

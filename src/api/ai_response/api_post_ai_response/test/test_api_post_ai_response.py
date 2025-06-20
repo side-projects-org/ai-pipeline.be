@@ -62,11 +62,11 @@ class Test(TestCase):
         prompt = M.Prompt(
             prompt_name="test_prompt",
             version="1.0",
-            params=Attr.AIRequestParamsAttribute(
+            params=Attr.AiRequestParamsAttribute(
                 model="gpt-3.5-turbo",
                 temperature=0.7,
                 max_completion_tokens=150,
-                messages=[Attr.AIMessageAttribute(role="user", content="Hello, how are you?")]
+                messages=[Attr.AiMessageAttribute(role="user", content="Hello, how are you?")]
             )
         )
 
@@ -98,7 +98,7 @@ class Test(TestCase):
 
             self.assertEqual(ai_response.answer.id, body["answer"]["id"])
 
-            print("AIResponse saved successfully:", ai_response.to_simple_dict())
+            print("AiResponse saved successfully:", ai_response.to_simple_dict())
         except Exception as e:
             self.fail(f"save_ai_response raised an exception unexpectedly: {e}")
         finally:
