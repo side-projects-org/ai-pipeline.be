@@ -19,7 +19,7 @@ def lambda_handler(event, context):
     max_tokens=body['max_completion_tokens'])
 
     return {
-        'used_params': {
+        'params': {
             'model': body['model'],
             'messages': body['messages'],
             'temperature': body['temperature'],

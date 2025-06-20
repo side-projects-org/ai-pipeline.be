@@ -29,7 +29,7 @@ def lambda_handler(event, context):
     data = response.json()
 
     return {
-        'used_params': {
+        'params': {
             'model': body['model'],
             'messages': body['messages'],
             'temperature': body['temperature'],

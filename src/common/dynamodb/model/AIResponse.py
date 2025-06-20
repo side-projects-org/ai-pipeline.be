@@ -19,7 +19,7 @@ AIResponse 모델 예시
     "prompt_name": "sample_prompt_name", # 프롬프트의 이름
     "version": "sample_prompt_name", # 프롬프트의 이름
     "created_at": "2023-10-01T12:00:00Z",
-    "used_params": {
+    "params": {
         "messages": [
             {
                 "role": "user",
