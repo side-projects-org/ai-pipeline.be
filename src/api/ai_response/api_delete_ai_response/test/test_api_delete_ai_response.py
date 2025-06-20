@@ -50,13 +50,13 @@ class Test(TestCase):
                 temperature=0.7,
                 max_completion_tokens=150
             ),
-            response=Attr.AIResponseAttribute(
+            response=Attr.AnswerAttribute(
                 id="response_id_123",
                 object="chat.completion",
                 created=1696156800,
                 model="gpt-3.5-turbo",
                 choices=[
-                    Attr.AIChoiceAttribute(
+                    Attr.ChoiceAttribute(
                         index=0,
                         message=Attr.AIMessageAttribute(
                             role="assistant",

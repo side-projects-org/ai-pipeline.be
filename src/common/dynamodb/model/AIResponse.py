@@ -73,7 +73,7 @@ class AIResponse(MyModel):
 
     params = Attr.AIRequestParamsAttribute(null=True)
 
-    response = Attr.AIResponseAttribute(null=True)
+    answer = Attr.AnswerAttribute(null=True)
 
     @classmethod
     def build_pk(cls, prompt_name: str, **kwargs) -> str:

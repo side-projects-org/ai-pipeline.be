@@ -12,7 +12,7 @@ class Test(TestCase):
         body = {
             "prompt_name": "test_prompt",
             # "version": "1.0",
-            "response": {
+            "answer": {
                 "id": "response123",
                 "choices": [
                     {"text": "This is a test response."}
@@ -37,7 +37,7 @@ class Test(TestCase):
         body = {
             "prompt_name": "test_prompt",
             "prompt_version": "1.0",
-            "response": {
+            "answer": {
                 "id": "response123",
                 "choices": [
                     {"text": "This is a test response."}
@@ -73,7 +73,7 @@ class Test(TestCase):
         body = {
             "prompt_name": "test_prompt",
             "version": "1.0",
-            "response": {
+            "answer": {
                 "id": "response123",
                 "choices": [
                     {"text": "This is a test response."}
@@ -96,7 +96,7 @@ class Test(TestCase):
             self.assertEqual(ai_response.prompt_name, body["prompt_name"])
             self.assertEqual(ai_response.version, body["version"])
 
-            self.assertEqual(ai_response.response.id, body["response"]["id"])
+            self.assertEqual(ai_response.answer.id, body["answer"]["id"])
 
             print("AIResponse saved successfully:", ai_response.to_simple_dict())
         except Exception as e:

@@ -66,18 +66,18 @@ class Test(TestCase):
         prompt.save()
 
         ai_responses = [
-            Attr.AIResponseAttribute(
+            Attr.AnswerAttribute(
                 id=f'response_{x}',
                 object='chat.completion',
                 created=1234567890 + x,
                 model='gpt-3.5-turbo',
-                usage=Attr.AIResponseUsageAttribute(
+                usage=Attr.AnswerUsageAttribute(
                     prompt_tokens=10 + x,
                     completion_tokens=20 + x,
                     total_tokens=30 + x
                 ),
                 choices=[
-                    Attr.AIChoiceAttribute(
+                    Attr.ChoiceAttribute(
                         index=0,
                         message=AIMessageAttribute(role='assistant', content=f'Response {x}'),
                         finish_reason='stop'

@@ -16,7 +16,7 @@ def validate_request_body(body):
     :param body: The request body to validate.
     :raises APIException: If required fields are missing.
     """
-    required_fields = {"prompt_name", "prompt_version", "response"}
+    required_fields = {"prompt_name", "prompt_version", "answer"}
     missing_fields = required_fields - body.keys()
 
     if missing_fields:
@@ -44,13 +44,13 @@ def lambda_handler(event, context):
 
 
 def save_ai_response(body:dict, prompt: M.Prompt):
-    attr_response_from_ai = Attr.AIResponseAttribute(**body['response'])
+    attr_response_from_ai = Attr.AnswerAttribute(**body['answer'])
 
     ai_response = M.AIResponse(
         prompt_name=prompt.prompt_name,
         version=prompt.version,
         params=prompt.params,
-        response=attr_response_from_ai
+        answer=attr_response_from_ai
     )
 
     ai_response.save()
