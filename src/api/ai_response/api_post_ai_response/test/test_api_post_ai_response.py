@@ -24,7 +24,10 @@ class Test(TestCase):
                 },
                 "object": "test_object",
                 "created": 1234567890
-            }
+            },
+            # "variables": {
+            #     "example_variable": "example_value"
+            # }
         }
 
         with self.assertRaises(APIException) as context:
@@ -36,7 +39,7 @@ class Test(TestCase):
     def test_validate_request_body(self):
         body = {
             "prompt_name": "test_prompt",
-            "prompt_version": "1.0",
+            "version": "1.0",
             "answer": {
                 "id": "response123",
                 "choices": [
@@ -49,6 +52,9 @@ class Test(TestCase):
                 },
                 "object": "test_object",
                 "created": 1234567890
+            },
+            "variables": {
+                "example_variable": "example_value"
             }
         }
 
@@ -85,6 +91,9 @@ class Test(TestCase):
                 },
                 "object": "test_object",
                 "created": 1234567890
+            },
+            "variables": {
+                "example_variable": "example_value"
             }
         }
         ai_response = None
@@ -95,7 +104,6 @@ class Test(TestCase):
 
             self.assertEqual(ai_response.prompt_name, body["prompt_name"])
             self.assertEqual(ai_response.version, body["version"])
-
             self.assertEqual(ai_response.answer.id, body["answer"]["id"])
 
             print("AiResponse saved successfully:", ai_response.to_simple_dict())

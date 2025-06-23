@@ -75,6 +75,8 @@ class AiResponse(MyModel):
 
     answer = Attr.AnswerAttribute(null=True)
 
+    variables = DynamicMapAttribute(null=True)
+
     @classmethod
     def build_pk(cls, prompt_name: str, **kwargs) -> str:
         return f"{prompt_name}"

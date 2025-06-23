@@ -16,7 +16,7 @@ def validate_request_body(body):
     :param body: The request body to validate.
     :raises APIException: If required fields are missing.
     """
-    required_fields = {"prompt_name", "prompt_version", "answer"}
+    required_fields = {"prompt_name", "version", "answer", "variables"}
     missing_fields = required_fields - body.keys()
 
     if missing_fields:
@@ -33,7 +33,7 @@ def lambda_handler(event, context):
     validate_request_body(body)
 
     # prompt_name, prompt_version 으로 Prompt 를 조회한다.
-    prompt = M.Prompt.get_item(prompt_name=body['prompt_name'], version=body['prompt_version'])
+    prompt = M.Prompt.get_item(prompt_name=body['prompt_name'], version=body['version'])
     if prompt is None:
         raise APIException(ErrorCode.INVALID_PARAMETER, param="prompt_name, version")
 
@@ -50,7 +50,8 @@ def save_ai_response(body:dict, prompt: M.Prompt):
         prompt_name=prompt.prompt_name,
         version=prompt.version,
         params=prompt.params,
-        answer=attr_response_from_ai
+        answer=attr_response_from_ai,
+        variables=body['variables']
     )
 
     ai_response.save()
